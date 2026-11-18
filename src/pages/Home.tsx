@@ -46,6 +46,11 @@ import { downloadICSFile, generateICS } from '../lib/icsGenerator';
 import { EventItem, GalleryItem, Language } from '../types';
 import type { SectionItemSnapshot, SectionSnapshot } from '../lib/snapshot';
 
+// ── Static asset imports — Vite hashes these for cache-busting ──────────────
+import heroPosterImg   from '../assets/images/lalibela_church_1793725586137.jpg';
+import wonchiImg       from '../assets/images/wonchi_crater_lake_1793712664730.jpg';
+import coffeeImg       from '../assets/images/ethiopian_coffee_ceremony_1793712665543.jpg';
+
 /* ─────────────────────────────────────────────────────────────────────
    Helper: resolve an i18n field from a section snapshot row,
    falling back to the registry default then to an empty string.
@@ -151,12 +156,17 @@ function resolveIcon(icon: string | null | undefined): React.ReactNode {
 ──────────────────────────────────────────────────────────────────────── */
 
 /* ─────────────────────────────────────────────────────────────────────
-   Image paths (unchanged — exactly the same files as before)
+   Image / video paths
+   - heroPosterImg, wonchiImg, coffeeImg are Vite-imported above so they
+     get content-hashed URLs that resolve correctly in both dev and prod.
+   - DEFAULT_HERO_VIDEO points to /videos/video.mp4 — the file that
+     actually exists in public/videos/.  No /public/ prefix: files in
+     public/ are served from the root.
 ──────────────────────────────────────────────────────────────────────── */
-const DEFAULT_HERO_POSTER = '/src/assets/images/lalibela_church_1793725586137.jpg';
-const DEFAULT_HERO_VIDEO  = '/public/videos/hero.mp4';
-const WONCHI_URL          = '/src/assets/images/wonchi_crater_lake_1793712664730.jpg';
-const COFFEE_URL          = '/src/assets/images/ethiopian_coffee_ceremony_1793712665543.jpg';
+const DEFAULT_HERO_POSTER = heroPosterImg;
+const DEFAULT_HERO_VIDEO  = '/videos/video.mp4';
+const WONCHI_URL          = wonchiImg;
+const COFFEE_URL          = coffeeImg;
 
 export const Home: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -530,7 +540,6 @@ export const Home: React.FC = () => {
               onError={() => { setUseStaticPoster(true); setIsPlaying(false); }}
             >
               <source src={(edition as any)?.heroVideoUrl ?? DEFAULT_HERO_VIDEO} type="video/mp4" />
-              <source src="/videos/hero.webm" type="video/webm" />
             </video>
           ) : (
             <img
@@ -556,6 +565,35 @@ export const Home: React.FC = () => {
               }}
             />
           )}
+        </div>
+
+        {/* ── Layer 1: gradient scrim ─────────────────────────────────────
+            Light overlay so text stays legible over any video frame.
+            Uses two gradients stacked:
+              • bottom-to-top deep fade  (keeps headline/buttons readable)
+              • flat mid-tone wash       (takes the raw brightness edge off)
+            Kept intentionally light so the video remains visible and cinematic.
+        ── */}
+        <div
+          aria-hidden="true"
+          style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }}
+        >
+          {/* Bottom-to-top fade — anchors the text block */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(to top, rgba(7,21,16,0.72) 0%, rgba(7,21,16,0.28) 45%, transparent 100%)',
+            }}
+          />
+          {/* Flat mid-tone wash — reduces overall brightness slightly */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'rgba(7,21,16,0.18)',
+            }}
+          />
         </div>
 
         {/* ── Layer 2: content column ──

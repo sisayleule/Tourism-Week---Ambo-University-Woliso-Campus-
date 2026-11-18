@@ -1,0 +1,123 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-audit:
+    name: Build, type-check, lint, audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      # Provide minimal env so prebuild succeeds via last-good fallback.
+      # Set VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY as repo secrets
+      # for a connected build.
+      VITE_SUPABASE_URL:      ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      VITE_SITE_URL:          ${{ secrets.VITE_SITE_URL }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+
+      - name: Content lint (no broken placeholders in built output)
+        run: node scripts/content-lint.mjs
+
+      - name: Asset reference check (no missing files, no aistudio PNGs)
+        run: node scripts/check-assets.mjs
+
+      - name: npm audit (fail on high/critical)
+        run: npm audit --audit-level=high
+        # Low-severity vulns (like @supabase/auth-js path routing) are accepted.
+        # Remove --audit-level flag to fail on any severity.
+
+      - name: Bundle budget check (public JS < 300 kB gzipped)
+        run: |
+          node -e "
+            const fs = require('fs');
+            const zlib = require('zlib');
+            const path = require('path');
+            const assets = fs.readdirSync('dist/assets');
+            let fail = false;
+            for (const f of assets) {
+              if (!f.endsWith('.js') || f.includes('StaffRouter') || f.includes('jszip')) continue;
+              const raw = fs.readFileSync(path.join('dist/assets', f));
+              const gz  = zlib.gzipSync(raw).length;
+              const kb  = (gz / 1024).toFixed(1);
+              console.log('  ' + f + ': ' + kb + ' kB gzipped');
+              if (gz > 300 * 1024) {
+                console.error('BUDGET EXCEEDED: ' + f + ' is ' + kb + ' kB gzipped (limit 300 kB)');
+                fail = true;
+              }
+            }
+            process.exit(fail ? 1 : 0);
+          "
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
+
+  playwright:
+    name: Playwright tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: build-and-audit
+
+    env:
+      VITE_SUPABASE_URL:      ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: npx playwright test --reporter=list
+        # Tests run against a local dev server started by playwright.config.ts webServer.
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14

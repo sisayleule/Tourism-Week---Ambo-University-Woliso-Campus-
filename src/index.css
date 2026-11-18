@@ -1,0 +1,504 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-editorial: "Syne", "Playfair Display", "Bricolage Grotesque", "Noto Sans Ethiopic", system-ui, sans-serif;
+  --font-serif: "Playfair Display", "Noto Sans Ethiopic", Georgia, serif;
+  --font-display: "Bricolage Grotesque", "Noto Sans Ethiopic", system-ui, -apple-system, sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Noto Sans Ethiopic", system-ui, -apple-system, sans-serif;
+  --font-ethiopic: "Noto Sans Ethiopic", "Plus Jakarta Sans", system-ui, sans-serif;
+
+  --color-primary: #0F3D2E;
+  --color-primary-dark: #0A2A20;
+  --color-gold: #D9A441;
+  --color-gold-hover: #C59132;
+  --color-terracotta: #C65D3B;
+  --color-offwhite: #FAF7F0;
+  --color-ink: #14201A;
+  --color-dark-bg: #0B1612;
+  --color-dark-surface: #12221C;
+  --color-dark-border: #1C352B;
+}
+
+/* ─── Design tokens ─────────────────────────────────────────────────── */
+:root {
+  --bg-canvas:        #FAF7F0;
+  --bg-section-alt:  #F2EDE3;
+  --text-main:        #14201A;
+  --text-muted:       #53635B;
+  --surface-card:     #FFFFFF;
+  --border-subtle:    #E6E1D5;
+  --brand-forest:     #0F3D2E;
+  --brand-gold:       #D9A441;
+  --brand-terracotta: #C65D3B;
+  --section-gap:      clamp(80px, 10vw, 130px);
+  --container-width:  1280px;
+  --radius-card:      20px;
+}
+
+.dark {
+  --bg-canvas:        #0B1612;
+  --bg-section-alt:  #0F1E19;
+  --text-main:        #E8EFEA;
+  --text-muted:       #95A99F;
+  --surface-card:     #12221C;
+  --border-subtle:    #1C352B;
+  --brand-forest:     #144D3A;
+  --brand-gold:       #E5B253;
+  --brand-terracotta: #D96F4D;
+}
+
+/* ─── Base ───────────────────────────────────────────────────────────── */
+
+/*
+ * Box-sizing: everything includes padding and border in its width/height.
+ * min-width: 0 on flex/grid children prevents overflow.
+ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-sans);
+  background-color: var(--bg-canvas);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Prevent x-scroll at the root level */
+  overflow-x: hidden;
+}
+
+body {
+  font-size: 16px;
+  line-height: 1.7;
+  /* Prevent x-scroll — catches absolutely positioned children that overflow */
+  overflow-x: hidden;
+  /* Safe-area gutters for notched/punch-hole phones */
+  padding-left:  env(safe-area-inset-left,  0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* Long Amharic and Oromo words must never push the page wider */
+h1, h2, h3, h4, h5, h6, p, li, td, th, label, span, a, button {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
+}
+
+/* Media never wider than their container */
+img, video, iframe, svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Flex/grid children: opt-in to shrink below content size (prevents overflow) */
+.flex > *, .grid > * {
+  min-width: 0;
+}
+
+/* Amharic script needs a little extra leading */
+html[lang="am"] {
+  font-family: var(--font-ethiopic);
+  line-height: 1.75;
+}
+html[lang="om"] {
+  font-family: var(--font-sans);
+  line-height: 1.65;
+}
+/* ─── Scrollbar hide ─────────────────────────────────────────────────── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ─── Tilet pattern divider ─────────────────────────────────────────── */
+.tilet-divider {
+  background-size: 24px 8px;
+  height: 8px;
+  background-image: repeating-linear-gradient(
+    45deg,
+    #0F3D2E 0, #0F3D2E 4px,
+    #D9A441 4px, #D9A441 8px,
+    #C65D3B 8px, #C65D3B 12px
+  );
+  opacity: 0.85;
+}
+.dark .tilet-divider {
+  background-image: repeating-linear-gradient(
+    45deg,
+    #144D3A 0, #144D3A 4px,
+    #E5B253 4px, #E5B253 8px,
+    #D96F4D 8px, #D96F4D 12px
+  );
+}
+
+/* ─── Scroll-reveal animation ───────────────────────────────────────── */
+@keyframes fadeRise {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-rise {
+  animation: fadeRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* stagger helpers */
+.delay-100 { animation-delay: 0.10s; }
+.delay-200 { animation-delay: 0.20s; }
+.delay-300 { animation-delay: 0.30s; }
+.delay-400 { animation-delay: 0.40s; }
+.delay-500 { animation-delay: 0.50s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-rise { animation: none; opacity: 1; transform: none; }
+}
+
+/* ─── Hover lift utility ─────────────────────────────────────────────── */
+.lift {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 48px -8px rgba(0,0,0,0.18);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lift:hover { transform: none; }
+}
+
+/* ─── Gold hairline divider ─────────────────────────────────────────── */
+.hairline {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--brand-gold), transparent);
+  opacity: 0.35;
+}
+
+/* ─── Section spacing ───────────────────────────────────────────────── */
+.section-gap {
+  padding-top:    var(--section-gap);
+  padding-bottom: var(--section-gap);
+}
+.section-gap-sm {
+  padding-top:    calc(var(--section-gap) * 0.6);
+  padding-bottom: calc(var(--section-gap) * 0.6);
+}
+
+/* ─── Alternating section backgrounds ──────────────────────────────── */
+.bg-canvas     { background-color: var(--bg-canvas); }
+.bg-section-alt { background-color: var(--bg-section-alt); }
+
+/* ─── Luxury serif heading sizes ────────────────────────────────────── */
+.heading-xl {
+  font-family: var(--font-editorial);
+  font-size: clamp(2.5rem, 5vw, 3.75rem);   /* 40–60px */
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+.heading-lg {
+  font-family: var(--font-editorial);
+  font-size: clamp(1.75rem, 3.5vw, 2.75rem); /* 28–44px */
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.heading-md {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem); /* 20–28px */
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+/* ─── Overline / eyebrow label ──────────────────────────────────────── */
+.overline {
+  font-size: 0.6875rem;   /* 11px */
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand-gold);
+}
+
+/* ─── Gold italic accent (single word) ─────────────────────────────── */
+.gold-italic {
+  font-style: italic;
+  color: var(--brand-gold);
+}
+
+/* ─── Small-caps date label ─────────────────────────────────────────── */
+.small-caps-date {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* ─── Edge fade on horizontal scroll containers ─────────────────────── */
+.edge-fade {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 5%,
+    black 95%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 5%,
+    black 95%,
+    transparent 100%
+  );
+}
+
+/* ─── Masonry gallery (CSS columns) ────────────────────────────────── */
+.masonry {
+  columns: 2;
+  column-gap: 1rem;
+}
+@media (min-width: 768px) {
+  .masonry { columns: 3; column-gap: 1.25rem; }
+}
+@media (min-width: 1024px) {
+  .masonry { columns: 4; column-gap: 1.5rem; }
+}
+
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: 1rem;
+}
+@media (min-width: 768px) {
+  .masonry-item { margin-bottom: 1.25rem; }
+}
+
+/* ─── Gold underline tab indicator ─────────────────────────────────── */
+.tab-gold-underline {
+  position: relative;
+}
+.tab-gold-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0; right: 0;
+  height: 2.5px;
+  background: var(--brand-gold);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: center;
+}
+.tab-gold-underline[aria-selected="true"]::after,
+.tab-gold-underline.active::after {
+  transform: scaleX(1);
+}
+
+/* ─── CTA band buttons ───────────────────────────────────────────────── */
+/* Primary: solid gold — lifts + soft gold glow on hover */
+.cta-btn-primary {
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 0.18s ease;
+}
+.cta-btn-primary:hover {
+  background-color: #C59132;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px -4px rgba(217, 164, 65, 0.55);
+}
+.cta-btn-primary:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px -2px rgba(217, 164, 65, 0.4);
+}
+
+/* Secondary: outline — faint gold tint fill on hover */
+.cta-btn-secondary {
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 0.18s ease,
+              border-color 0.18s ease;
+}
+.cta-btn-secondary:hover {
+  background-color: rgba(217, 164, 65, 0.12);
+  border-color: #D9A441;
+  transform: translateY(-3px);
+}
+.cta-btn-secondary:active {
+  transform: translateY(-1px);
+  background-color: rgba(217, 164, 65, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-btn-primary,
+  .cta-btn-primary:hover,
+  .cta-btn-primary:active,
+  .cta-btn-secondary,
+  .cta-btn-secondary:hover,
+  .cta-btn-secondary:active {
+    transform: none;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
+    box-shadow: none;
+  }
+}
+
+/* ─── Safe-area utilities ────────────────────────────────────────────── */
+/* Used by fixed bars on notched phones (iPhone X+, modern Android).     */
+.safe-area-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+}
+.safe-area-top {
+  padding-top: max(env(safe-area-inset-top, 0px), 0px);
+}
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ─── 100dvh / 100svh with fallback ────────────────────────────────── */
+/* dvh = dynamic viewport height (adjusts for browser chrome on phones). */
+/* svh = small viewport height (never includes browser chrome).          */
+.h-screen-dyn {
+  height: 100vh;                   /* legacy fallback */
+  height: 100dvh;                  /* modern — adjusts for keyboard */
+}
+.h-screen-small {
+  height: 100vh;                   /* legacy fallback */
+  height: 100svh;                  /* always excludes browser chrome */
+}
+.min-h-screen-dyn {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* ─── Bottom-sheet / mobile modal ───────────────────────────────────── */
+/* Any dialog or drawer that should appear as a bottom sheet on phones.  */
+@media (max-width: 639px) {
+  .mobile-bottom-sheet {
+    position: fixed !important;
+    inset: auto 0 0 0 !important;
+    max-height: calc(90dvh - env(safe-area-inset-bottom, 0px)) !important;
+    max-height: calc(90vh  - env(safe-area-inset-bottom, 0px));
+    overflow-y: auto !important;
+    border-bottom-left-radius:  0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-top-left-radius:  1.5rem !important;
+    border-top-right-radius: 1.5rem !important;
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 1rem) !important;
+  }
+  /* Full-screen sheet (lightbox, full menus) */
+  .mobile-full-sheet {
+    position: fixed !important;
+    inset: 0 !important;
+    border-radius: 0 !important;
+    max-height: 100dvh !important;
+    max-height: 100vh;
+  }
+}
+
+/* ─── Sticky portal action bar ──────────────────────────────────────── */
+/* Keeps Save / Publish always visible above the keyboard on phones.     */
+.sticky-action-bar {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 0.5rem);
+  background: var(--surface-card);
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* ─── Scroll-snap carousels ────────────────────────────────────────── */
+.snap-x-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-left: 1rem;
+  /* Hide scrollbar cross-browser */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.snap-x-container::-webkit-scrollbar { display: none; }
+
+.snap-x-item {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* ─── Focus ring (consistent across browsers) ───────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--brand-gold);
+  outline-offset: 3px;
+}
+
+/* ─── Fluid type scale ───────────────────────────────────────────────── */
+/* Applied via Tailwind utilities wherever possible. These are fallbacks. */
+
+/* ─── Minimum tap target helper ────────────────────────────────────── */
+/* Add .tap-target to any icon button that might be too small.           */
+.tap-target {
+  min-width:  44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── Unsaved-changes badge (portal) ───────────────────────────────── */
+.unsaved-dot::after {
+  content: '';
+  display: inline-block;
+  width:  8px;
+  height: 8px;
+  background: var(--brand-gold);
+  border-radius: 50%;
+  margin-left: 6px;
+  vertical-align: middle;
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(0.85); }
+}
+
+/* ─── Reduced motion: disable all pulsing / animations ─────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .unsaved-dot::after { animation: none; }
+  .snap-x-container   { scroll-behavior: auto; }
+}
+
+/* ─── Hero section: desktop max-height cap ──────────────────────────── */
+/* On phones (< 1024 px) the hero must never have a max-height: long-     */
+/* language content (Amharic, Oromo) can make it taller than the screen.  */
+/* On desktop we cap it so it doesn't exceed the monitor height.          */
+@media (min-width: 1024px) {
+  [aria-label="Festival hero"] {
+    max-height: min(1080px, 100svh);
+  }
+}
+
+/* ─── Hero media: force fill regardless of global height:auto ──────── */
+/* The global rule `img, video { height: auto }` above is correct for    */
+/* content images but must NOT apply to the hero full-bleed media.       */
+/* The video/img inside [data-media-wrap] use inline styles that already  */
+/* override this, but we add a high-specificity backup here.             */
+[data-media-wrap] > video,
+[data-media-wrap] > img {
+  position:    absolute !important;
+  top:         0        !important;
+  left:        0        !important;
+  width:       100%     !important;
+  height:      100%     !important;
+  min-width:   100%     !important;
+  min-height:  100%     !important;
+  max-width:   none     !important;
+  max-height:  none     !important;
+  aspect-ratio:auto     !important;
+  object-fit:  cover    !important;
+  object-position: center !important;
+  display:     block    !important;
+  transform:   none     !important;
+}
+
+

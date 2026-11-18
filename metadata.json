@@ -1,0 +1,8 @@
+{
+  "name": "Ambo University Woliso Campus — Tourism Week",
+  "description": "Official public website for Ambo University, Woliso Campus, Department of Tourism and Hotel Management Annual Tourism Week celebration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

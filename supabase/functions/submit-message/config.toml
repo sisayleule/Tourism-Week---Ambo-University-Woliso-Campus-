@@ -1,0 +1,2 @@
+# submit-message is callable by unauthenticated visitors
+verify_jwt = false

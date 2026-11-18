@@ -1,0 +1,21 @@
+# Cache-control rules for Netlify and compatible static hosts.
+# Vercel uses vercel.json instead (already configured).
+
+# Snapshot metadata — must never be served from cache; rebuilt on every deploy.
+/content-meta.json
+  Cache-Control: no-store, no-cache, must-revalidate, proxy-revalidate
+
+# Sitemap — revalidate hourly (crawlers only, no interactive use).
+/sitemap.xml
+  Cache-Control: public, max-age=3600
+
+# Versioned static assets (Vite hashes filenames) — cache forever.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Staff portal — private, never cached.
+/staff/*
+  Cache-Control: no-store, no-cache, must-revalidate, proxy-revalidate
+  X-Robots-Tag: noindex, nofollow
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff

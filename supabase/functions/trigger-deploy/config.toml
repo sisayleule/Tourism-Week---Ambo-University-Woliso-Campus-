@@ -1,0 +1,2 @@
+# trigger-deploy requires a staff JWT — only authenticated staff can trigger deploys
+verify_jwt = true

@@ -1,0 +1,64 @@
+# keep-alive.yml — Prevents the Supabase free-plan project from pausing.
+#
+# Supabase pauses a project after 7 days of inactivity on the free plan.
+# This workflow sends a lightweight GET request to the edition_public REST
+# endpoint every 3 days, keeping the project active.
+#
+# REQUIRED SECRETS (set in GitHub → Settings → Secrets → Actions):
+#   SUPABASE_URL       — e.g. https://otdaiykbrmjycjwfjndt.supabase.co
+#   SUPABASE_ANON_KEY  — the publishable anon key (safe to use in CI)
+#
+# NOTE: GitHub may automatically disable scheduled workflows if the repository
+# has no pushes for 60 days. If you notice the project pausing despite this
+# workflow, re-enable it from the Actions tab, or push a small change.
+#
+# This workflow can also be triggered manually from the Actions tab at any time.
+
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # Every 3 days at 06:00 UTC (09:00 Addis Ababa time)
+    - cron: '0 6 */3 * *'
+  workflow_dispatch:
+    # Allow manual trigger from the Actions tab
+
+jobs:
+  ping:
+    name: Ping Supabase REST endpoint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Ping edition_public endpoint
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "ERROR: SUPABASE_URL or SUPABASE_ANON_KEY secret is not set."
+            echo "Go to GitHub → Settings → Secrets → Actions and add both secrets."
+            exit 1
+          fi
+
+          ENDPOINT="${SUPABASE_URL}/rest/v1/edition_public?select=id,is_current&is_current=eq.true&limit=1"
+          echo "Pinging: $ENDPOINT"
+
+          HTTP_STATUS=$(curl --silent --output /dev/null --write-out "%{http_code}" \
+            --max-time 30 \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            "$ENDPOINT")
+
+          echo "HTTP status: $HTTP_STATUS"
+
+          if [ "$HTTP_STATUS" -eq 200 ] || [ "$HTTP_STATUS" -eq 206 ]; then
+            echo "✓ Supabase is reachable and active."
+          elif [ "$HTTP_STATUS" -eq 503 ]; then
+            echo "⚠ Supabase returned 503 — the project may be paused."
+            echo "Log in to https://supabase.com and resume the project."
+            exit 1
+          else
+            echo "⚠ Unexpected HTTP status $HTTP_STATUS from Supabase."
+            exit 1
+          fi

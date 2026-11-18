@@ -1,0 +1,34 @@
+version: 2
+updates:
+  # npm — weekly, grouped into one PR
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Africa/Addis_Ababa
+    open-pull-requests-limit: 5
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
+    ignore:
+      # Pin supabase-js at 2.49.x until @supabase/auth-js >=2.70 is confirmed
+      # compatible with this project's Database type definitions.
+      # Track: https://github.com/supabase/auth-js/releases
+      - dependency-name: "@supabase/supabase-js"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+
+  # GitHub Actions — weekly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Africa/Addis_Ababa
+    groups:
+      github-actions:
+        patterns:
+          - "*"

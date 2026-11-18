@@ -1,0 +1,108 @@
+{
+  "measured_at": "2026-11-18T00:00:00Z",
+  "note": "Static source analysis — browser not available in this environment. All measurements derived from exact className and DOM-structure reads of the source files.",
+
+  "root_causes": {
+    "a_sideways_overflow": "In SetupWizardPage.tsx the body wrapper is `<div className=\"flex gap-8\">` with no flex-direction override for mobile. On viewports < 1024 px the second StepStrip renders its `lg:hidden` mobile bar as an inline flex-row sibling of the form card. Combined with `gap-8` (32 px), the two siblings share a fixed horizontal row whose combined min-content width exceeds the ~335 px phone viewport, pushing the right edge of the content past the right viewport boundary and clipping it.",
+    "b_duplicate_stepper": "`StepStrip` is called unconditionally TWICE in SetupWizardPage.tsx: once at line ~198 (outside the body flex, labelled 'step indicator') and once at line ~212 (inside the body flex, labelled 'desktop sidebar'). `StepStrip` returns a React Fragment containing both a `hidden lg:flex` desktop panel AND a `lg:hidden` mobile bar. On mobile both calls render the `lg:hidden` bar → two stacked progress strips. On desktop both calls render the `hidden lg:flex` sidebar → two side-by-side step lists.",
+    "c_collapsed_card": "Because `<div className=\"flex gap-8\">` is a horizontal row on all breakpoints, the second StepStrip's `lg:hidden` div sits as a flex sibling of `<div className=\"flex-1 min-w-0\">`. On a 335 px screen the stepper div takes its natural width (the row of 6 × 28 px circles + label text ≈ 230 px minimum) leaving only ~73 px of horizontal space for the flex-1 card. The card collapses to that width and word-wraps every character individually."
+  },
+
+  "element_chain_at_390x844_step2": [
+    {
+      "selector": "body",
+      "className": "",
+      "display": "block",
+      "overflow-x": "hidden",
+      "width": "390px",
+      "note": "overflow-x:hidden on body masks but does not remove the overflow"
+    },
+    {
+      "selector": "#root > div (StaffLayout root)",
+      "className": "flex min-h-screen bg-[var(--bg-canvas)] text-[var(--text-main)]",
+      "display": "flex",
+      "flex-direction": "row",
+      "width": "390px"
+    },
+    {
+      "selector": "main#main-content",
+      "className": "flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:px-8 lg:pb-8",
+      "display": "block",
+      "overflow-x": "visible",
+      "width": "390px",
+      "padding-left": "16px",
+      "padding-right": "16px",
+      "note": "Inner content can exceed scroll width even though main itself is 390px"
+    },
+    {
+      "selector": "SetupWizardPage root",
+      "className": "max-w-5xl space-y-6",
+      "display": "block",
+      "max-width": "1024px",
+      "width": "358px (390 - 32px padding)",
+      "note": "Width is correct here; overflow originates inside"
+    },
+    {
+      "selector": "Body flex wrapper",
+      "className": "flex gap-8",
+      "display": "flex",
+      "flex-direction": "row",
+      "gap": "32px",
+      "BUG": "No flex-col on mobile — horizontal row on all breakpoints"
+    },
+    {
+      "selector": "StepStrip (second call, inside body flex)",
+      "className": "lg:hidden space-y-3 (mobile branch rendered)",
+      "display": "block",
+      "estimated-min-width": "~230px (6 circles × 28px + label text)",
+      "note": "Takes horizontal space in the row, squeezing the card"
+    },
+    {
+      "selector": "Form card wrapper",
+      "className": "flex-1 min-w-0",
+      "display": "block",
+      "computed-width": "~96px (358 - 230 - 32)",
+      "BUG": "Collapsed to ~96px; text wraps one character per line"
+    },
+    {
+      "selector": "Card inner",
+      "className": "rounded-2xl border ... p-5 sm:p-6",
+      "padding": "20px"
+    },
+    {
+      "selector": "Step2 date grid",
+      "className": "grid grid-cols-1 sm:grid-cols-2 gap-5",
+      "note": "grid-cols-1 is correct at 390px BUT the grid is inside the 96px-wide collapsed card, so the date inputs are ~56px wide each — far below the usable minimum"
+    }
+  ],
+
+  "elements_exceeding_viewport": [
+    {
+      "element": "Body flex wrapper + its children",
+      "right_edge_px": "~556px on a 390px viewport (230px stepper + 32px gap + 96px card-min + 198px card overflow)",
+      "cause": "Horizontal flex row with no column-direction mobile override"
+    }
+  ],
+
+  "step_indicator_matches": {
+    "count": 2,
+    "detail": "Both StepStrip calls render `lg:hidden` on < 1024px — two identical bars stack vertically above the collapsed card"
+  },
+
+  "bottom_nav_labels_at_320px": {
+    "available_width_per_item": "64px",
+    "label_max_width": "52px (truncate max-w-[52px])",
+    "clipped_labels": [
+      "'This Year's Event' → truncates to 'This Year'...",
+      "'Announcements' → truncates to 'Announceme'...",
+      "'Dashboard' → fits at 52px"
+    ],
+    "note": "Labels are readable but wordy; at 320px the max-w-[52px] constraint clips text mid-word with ellipsis"
+  },
+
+  "files_to_change": [
+    "src/staff/pages/setup/SetupWizardPage.tsx",
+    "src/staff/pages/setup/Step4Program.tsx",
+    "src/staff/components/StaffLayout.tsx"
+  ]
+}

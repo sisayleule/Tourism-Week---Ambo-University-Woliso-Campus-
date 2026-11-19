@@ -7,13 +7,12 @@
  *   changes-waiting  — amber bar: "Changes pending — Update website"
  *   updating         — blue bar: "Updating… (1–2 min)"
  *   error            — red bar with plain-language error message
- *   local dev        — grey bar: "Local mode: changes appear after you refresh the public page"
  *
  * WebsiteSyncDashboardCard — richer card for the dashboard.
  */
 
 import React, { useState } from 'react'
-import { RefreshCw, CheckCircle2, AlertCircle, Loader2, Monitor } from 'lucide-react'
+import { RefreshCw, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react'
 import { useWebsiteSync } from '../hooks/useWebsiteSync'
 
 // ─── Error plain-language mapper ─────────────────────────────────────────────
@@ -45,16 +44,6 @@ export const WebsiteSyncBar: React.FC = () => {
     setTriggering(true)
     await triggerDeploy()
     setTriggering(false)
-  }
-
-  // Local dev — always show the advisory message
-  if (isLocalDev) {
-    return (
-      <div className="flex items-center gap-2.5 px-4 sm:px-6 py-2 bg-stone-100 dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 text-xs text-stone-500 dark:text-stone-400">
-        <Monitor size={12} className="shrink-0" aria-hidden="true" />
-        <span>Local mode: changes appear after you refresh the public page</span>
-      </div>
-    )
   }
 
   if (status === 'loading' || status === 'up-to-date') return null
@@ -111,7 +100,7 @@ export const WebsiteSyncBar: React.FC = () => {
 export const WebsiteSyncDashboardCard: React.FC = () => {
   const {
     status, generatedAt, lastChangeAt,
-    deployError, isLocalDev, triggerDeploy,
+    deployError, triggerDeploy,
   } = useWebsiteSync()
   const [triggering, setTriggering] = useState(false)
 
@@ -128,21 +117,16 @@ export const WebsiteSyncDashboardCard: React.FC = () => {
     } catch { return iso }
   }
 
-  const statusLabel = isLocalDev
-    ? 'Local mode'
-    : status === 'loading'    ? 'Checking…'
+  const statusLabel = status === 'loading'    ? 'Checking…'
     : status === 'updating'   ? 'Updating…'
     : status === 'up-to-date' ? 'Up to date'
     : 'Changes waiting'
 
-  const statusColor = isLocalDev
-    ? 'text-stone-500'
-    : status === 'up-to-date' ? 'text-emerald-600 dark:text-emerald-400'
+  const statusColor = status === 'up-to-date' ? 'text-emerald-600 dark:text-emerald-400'
     : status === 'updating'   ? 'text-blue-600 dark:text-blue-400'
     : 'text-amber-600 dark:text-amber-400'
 
-  const icon = isLocalDev        ? <Monitor size={14} />
-    : status === 'up-to-date'    ? <CheckCircle2 size={14} />
+  const icon = status === 'up-to-date'    ? <CheckCircle2 size={14} />
     : status === 'updating'      ? <Loader2 size={14} className="animate-spin" />
     : status === 'loading'       ? <Loader2 size={14} className="animate-spin" />
     : <AlertCircle size={14} />
@@ -165,18 +149,12 @@ export const WebsiteSyncDashboardCard: React.FC = () => {
         </p>
       )}
 
-      {isLocalDev && (
-        <p className="text-xs text-stone-500">
-          Changes appear after you refresh the public page in this local environment.
-        </p>
-      )}
-
       <div className="grid grid-cols-2 gap-2 text-[10px] text-stone-500 dark:text-stone-400">
         <span>Last built: <strong className="text-stone-700 dark:text-stone-300">{fmtTime(generatedAt)}</strong></span>
         <span>Last change: <strong className="text-stone-700 dark:text-stone-300">{fmtTime(lastChangeAt)}</strong></span>
       </div>
 
-      {!isLocalDev && status === 'changes-waiting' && (
+      {status === 'changes-waiting' && (
         <button
           onClick={handleTrigger}
           disabled={triggering}

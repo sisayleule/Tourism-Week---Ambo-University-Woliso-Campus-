@@ -160,7 +160,13 @@ export function Step5MoreInfo({ edition, onSaved }: Props) {
           <Label htmlFor="heroVideo">Hero background video URL</Label>
           <TextInput id="heroVideo" type="url" value={heroVideo}
             onChange={e => { setHeroVideo(e.target.value); mark() }}
-            placeholder="https://… or leave blank for default (/videos/hero.mp4)" />
+            placeholder="https://… or leave blank for default" />
+          <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">
+            Use a short loop (10 to 12 seconds), 720p or smaller, under 5 MB, no sound.
+            Large videos stutter on phones.{' '}
+            <strong className="text-amber-600 dark:text-amber-400">Do not host videos in Supabase Storage</strong>{' '}
+            — use a CDN or leave blank to use the default.
+          </p>
         </div>
 
         <div className="space-y-1.5">

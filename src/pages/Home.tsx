@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef, useState, useMemo } from 'react';
+﻿import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   ArrowDown,
@@ -23,6 +23,8 @@ import {
   Users,
   X,
 } from 'lucide-react';
+import { HeroCountdown } from '../components/hero/HeroCountdown';
+import { HeroVideo, type HeroVideoHandle } from '../components/hero/HeroVideo';
 import { useTranslation } from 'react-i18next';
 import { LoadingSkeleton } from '../components/common/StateViews';
 import { StatusBadge } from '../components/common/StatusBadge';
@@ -47,9 +49,9 @@ import { EventItem, GalleryItem, Language } from '../types';
 import type { SectionItemSnapshot, SectionSnapshot } from '../lib/snapshot';
 
 // ── Static asset imports — Vite hashes these for cache-busting ──────────────
-import heroPosterImg   from '../assets/images/lalibela_church_1793725586137.jpg';
 import wonchiImg       from '../assets/images/wonchi_crater_lake_1793712664730.jpg';
 import coffeeImg       from '../assets/images/ethiopian_coffee_ceremony_1793712665543.jpg';
+import { DEFAULT_HERO_POSTER } from '../lib/heroMedia';
 
 /* ─────────────────────────────────────────────────────────────────────
    Helper: resolve an i18n field from a section snapshot row,
@@ -157,14 +159,10 @@ function resolveIcon(icon: string | null | undefined): React.ReactNode {
 
 /* ─────────────────────────────────────────────────────────────────────
    Image / video paths
-   - heroPosterImg, wonchiImg, coffeeImg are Vite-imported above so they
-     get content-hashed URLs that resolve correctly in both dev and prod.
-   - DEFAULT_HERO_VIDEO points to /videos/video.mp4 — the file that
-     actually exists in public/videos/.  No /public/ prefix: files in
-     public/ are served from the root.
+   - wonchiImg, coffeeImg are Vite-imported above (content-hashed).
+   - DEFAULT_HERO_POSTER is imported from heroMedia.ts (also Vite-hashed).
+   - Hero video src selection (480p vs 720p) is handled inside HeroVideo.
 ──────────────────────────────────────────────────────────────────────── */
-const DEFAULT_HERO_POSTER = heroPosterImg;
-const DEFAULT_HERO_VIDEO  = '/videos/video.mp4';
 const WONCHI_URL          = wonchiImg;
 const COFFEE_URL          = coffeeImg;
 
@@ -190,17 +188,15 @@ export const Home: React.FC = () => {
   const { data: ctaSection       } = useSection('home.cta');
 
   /* ── video ── */
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const heroVideoRef  = useRef<HeroVideoHandle>(null);
   const [isPlaying,       setIsPlaying      ] = useState(true);
   const [useStaticPoster, setUseStaticPoster] = useState(false);
-  /**
-   * autoplayBlocked: true when the browser loaded the video but silently
-   * refused to play it (iOS Low Power Mode, some Android policies).
-   * We detect this by calling play() after mount — if the promise rejects
-   * with NotAllowedError the video is blocked; we fall back to showing the
-   * poster + a centred Play button that lets the user start it manually.
-   */
   const [autoplayBlocked, setAutoplayBlocked] = useState(false);
+
+  /* Stable callbacks for HeroVideo — won't cause it to re-render */
+  const handleStallFallback  = useCallback(() => { setUseStaticPoster(true); setIsPlaying(false); }, []);
+  const handlePlayingChange  = useCallback((playing: boolean) => setIsPlaying(playing), []);
+  const handleAutoplayBlocked = useCallback(() => { setAutoplayBlocked(true); setIsPlaying(false); }, []);
 
   /* ── gallery lightbox ── */
   const [activeGalleryModal, setActiveGalleryModal] = useState<GalleryItem | null>(null);
@@ -219,9 +215,6 @@ export const Home: React.FC = () => {
     const maxDayWithEvents = Math.max(...events.map((e) => e.day));
     return allDays.filter((d) => d.day <= Math.max(maxDayWithEvents, 1));
   }, [allDays, events]);
-
-  /* ── countdown ── */
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   /* ── carousels ── */
   const highlightsRef = useRef<HTMLDivElement>(null);
@@ -246,75 +239,16 @@ export const Home: React.FC = () => {
     );
   }, [edition, currentLang]);
 
-  /* ─── network / motion detection ───────────────────────────────── */
-  /* ─── network / motion detection ───────────────────────────────── */
+  /* ─── network / motion detection (Save-Data / reduced-motion → static poster) ── */
   useEffect(() => {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const nav = navigator as unknown as { connection?: { saveData?: boolean; effectiveType?: string } };
     const slowNet = nav.connection?.saveData || ['2g', 'slow-2g'].includes(nav.connection?.effectiveType ?? '');
     if (reducedMotion || slowNet) { setUseStaticPoster(true); setIsPlaying(false); }
   }, []);
-
-  /* ─── iOS Low Power Mode / autoplay-block detection ─────────────── */
-  useEffect(() => {
-    if (useStaticPoster) return;           // already showing poster
-    const vid = videoRef.current;
-    if (!vid) return;
-
-    // For remote URLs the video may not be buffered yet when the component
-    // mounts, so calling play() immediately causes an AbortError that we
-    // cannot distinguish from a policy NotAllowedError.  Instead we wait
-    // for the 'canplay' event (browser has buffered enough to start), then
-    // attempt play().  If the video is already ready (readyState ≥ 3) we
-    // call play() straight away.
-    const attemptPlay = () => {
-      const promise = vid.play();
-      if (promise !== undefined) {
-        promise.catch((err: Error) => {
-          if (err.name === 'NotAllowedError') {
-            // Browser policy blocked autoplay — show poster + manual Play button
-            setAutoplayBlocked(true);
-            setIsPlaying(false);
-          }
-          // AbortError / NotSupportedError → onError handler or user clicks Play
-        });
-      }
-    };
-
-    if (vid.readyState >= 3) {
-      // HAVE_FUTURE_DATA or better — safe to play immediately
-      attemptPlay();
-    } else {
-      vid.addEventListener('canplay', attemptPlay, { once: true });
-    }
-
-    return () => {
-      vid.removeEventListener('canplay', attemptPlay);
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [useStaticPoster]);
-
-  /* ─── countdown ─────────────────────────────────────────────────── */
-  useEffect(() => {
-    if (!edition) return;
-    const target = new Date(edition.startDateGC + 'T08:00:00Z').getTime();
-    const tick = () => {
-      const dist = target - Date.now();
-      if (dist > 0) {
-        setTimeLeft({
-          days:    Math.floor(dist / 86_400_000),
-          hours:   Math.floor((dist % 86_400_000) / 3_600_000),
-          minutes: Math.floor((dist % 3_600_000)  / 60_000),
-          seconds: Math.floor((dist % 60_000)      / 1_000),
-        });
-      } else {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-      }
-    };
-    tick();
-    const id = setInterval(tick, 1_000);
-    return () => clearInterval(id);
-  }, [edition]);
+  /* Note: autoplay-block detection, canplay handling, stall guard, and the
+     countdown interval are all handled inside HeroVideo / HeroCountdown.
+     The 1-second countdown tick never touches this component's state. */
 
   /* ─── typewriter ─────────────────────────────────────────────────── */
   useEffect(() => {
@@ -376,15 +310,11 @@ export const Home: React.FC = () => {
 
   /* ─── helpers ────────────────────────────────────────────────────── */
   const toggleVideo = () => {
-    if (!videoRef.current) return;
     if (isPlaying) {
-      videoRef.current.pause();
-      setIsPlaying(false);
+      heroVideoRef.current?.pause();
     } else {
-      videoRef.current.play().then(() => {
-        setIsPlaying(true);
-        setAutoplayBlocked(false);
-      }).catch(() => {});
+      heroVideoRef.current?.play();
+      setAutoplayBlocked(false);
     }
   };
 
@@ -507,14 +437,15 @@ export const Home: React.FC = () => {
         }}
       >
         {/* ── Layer 0: media wrapper — absolute, covers full section ────────────
-            The wrapper is position:absolute inset:0 so it is never in flex
-            flow and always matches the section's exact dimensions.
+            HeroVideo handles: source selection (480/720), deferred src
+            assignment, stall guard, IntersectionObserver pause, tab-hidden
+            pause, and fade-in. The poster img is always present behind the
+            video so there is never a black flash.
 
             The video/img use INLINE styles for width/height/objectFit because
             the global CSS rule `img, video { height: auto }` in index.css has
             higher specificity than Tailwind utility classes and would otherwise
-            limit the media to its intrinsic aspect-ratio height (~190 px on a
-            390 px-wide phone for a 16:9 video).  Inline styles always win.
+            limit the media to its intrinsic aspect-ratio height.
         ── */}
         <div
           data-media-wrap
@@ -527,62 +458,39 @@ export const Home: React.FC = () => {
             background: '#071510',
           }}
         >
-          {!useStaticPoster ? (
-            <video
-              ref={videoRef}
-              autoPlay
-              loop
-              muted
-              playsInline
-              /* webkit-playsinline is required for inline play on iOS Safari */
-              {...({ 'webkit-playsinline': 'true' } as Record<string, string>)}
-              preload="auto"
-              poster={resolveImageSrc((edition as any)?.heroPosterUrl ?? DEFAULT_HERO_POSTER)}
-              /* No className for sizing — inline styles beat the global height:auto rule */
-              style={{
-                position:   'absolute',
-                top:        0,
-                left:       0,
-                width:      '100%',
-                height:     '100%',
-                minWidth:   '100%',
-                minHeight:  '100%',
-                maxWidth:   'none',
-                maxHeight:  'none',
-                aspectRatio:'auto',
-                objectFit:  'cover',
-                objectPosition: 'center',
-                display:    'block',
-                transform:  'none',
-              }}
-              onError={() => { setUseStaticPoster(true); setIsPlaying(false); }}
-            >
-              <source src={(edition as any)?.heroVideoUrl ?? DEFAULT_HERO_VIDEO} type="video/mp4" />
-            </video>
-          ) : (
-            <img
-              src={resolveImageSrc((edition as any)?.heroPosterUrl ?? DEFAULT_HERO_POSTER)}
-              alt="Ethiopian destinations: Lalibela Rock Church"
-              fetchPriority="high"
-              /* No className for sizing — inline styles beat the global height:auto rule */
-              style={{
-                position:   'absolute',
-                top:        0,
-                left:       0,
-                width:      '100%',
-                height:     '100%',
-                minWidth:   '100%',
-                minHeight:  '100%',
-                maxWidth:   'none',
-                maxHeight:  'none',
-                aspectRatio:'auto',
-                objectFit:  'cover',
-                objectPosition: 'center',
-                display:    'block',
-                transform:  'none',
-              }}
-            />
-          )}
+          {/* Poster always rendered — visible until video fades in or when skipVideo */}
+          <img
+            src={resolveImageSrc((edition as any)?.heroPosterUrl ?? DEFAULT_HERO_POSTER)}
+            alt="Ethiopian destinations: Lalibela Rock Church"
+            fetchPriority="high"
+            style={{
+              position:    'absolute',
+              top:         0,
+              left:        0,
+              width:       '100%',
+              height:      '100%',
+              minWidth:    '100%',
+              minHeight:   '100%',
+              maxWidth:    'none',
+              maxHeight:   'none',
+              aspectRatio: 'auto',
+              objectFit:   'cover',
+              objectPosition: 'center',
+              display:     'block',
+              transform:   'none',
+            }}
+          />
+          {/* HeroVideo renders null when skipVideo=true; otherwise the video
+              element sits on top of the poster and fades in when playing */}
+          <HeroVideo
+            ref={heroVideoRef}
+            posterSrc={resolveImageSrc((edition as any)?.heroPosterUrl ?? DEFAULT_HERO_POSTER)}
+            skipVideo={useStaticPoster}
+            externalIsPlaying={isPlaying}
+            onStallFallback={handleStallFallback}
+            onPlayingChange={handlePlayingChange}
+            onAutoplayBlocked={handleAutoplayBlocked}
+          />
         </div>
 
         {/* ── Layer 1: gradient scrim ─────────────────────────────────────
@@ -677,47 +585,34 @@ export const Home: React.FC = () => {
               {edition?.subThemeI18n?.[currentLang] ?? edition?.subThemeI18n?.en ?? t('hero.tagline')}
             </p>
 
-            {/* Venue chip */}
-            <div className="inline-flex items-center gap-2 text-stone-200 bg-black/40 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/15 fade-rise delay-400"
-              style={{ fontSize: 'clamp(0.75rem, 1.2vw, 0.9rem)' }}>
+            {/* Venue chip — solid bg on mobile (≤lg), backdrop-blur on desktop */}
+            <div
+              className="inline-flex items-center gap-2 text-stone-200 px-4 py-1.5 rounded-full border border-white/15 fade-rise delay-400 lg:backdrop-blur-md"
+              style={{
+                fontSize: 'clamp(0.75rem, 1.2vw, 0.9rem)',
+                /* Solid bg on mobile avoids compositing cost; desktop keeps blur */
+                background: 'rgba(0,0,0,0.50)',
+              }}
+            >
               <MapPin className="h-3.5 w-3.5 text-[#D9A441] shrink-0" aria-hidden="true" />
               <span>{edition?.venueI18n[currentLang] ?? edition?.venueI18n.en}</span>
             </div>
 
             {/* ── Status block ── */}
 
-            {/* UPCOMING: countdown */}
-            {editionStatus === 'upcoming' && (
-              <div className="flex flex-col items-center w-full fade-rise delay-500"
-                style={{ gap: 'clamp(6px,1vh,12px)' }}>
-                <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#D9A441]">
-                  <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-                  {t('hero.startsIn')}
-                </p>
-                <div className="grid grid-cols-4 w-full max-w-[280px] xs:max-w-xs sm:max-w-sm"
-                  style={{ gap: 'clamp(4px,1.2vw,10px)' }}>
-                  {[
-                    { v: timeLeft.days,    l: t('hero.days')    },
-                    { v: timeLeft.hours,   l: t('hero.hours')   },
-                    { v: timeLeft.minutes, l: t('hero.minutes') },
-                    { v: timeLeft.seconds, l: t('hero.seconds') },
-                  ].map(({ v, l }, i) => (
-                    <div
-                      key={i}
-                      className="flex flex-col items-center bg-black/40 backdrop-blur-md rounded-xl border border-white/15 py-2 px-1"
-                    >
-                      <span className="block font-editorial font-extrabold tabular-nums text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]"
-                        style={{ fontSize: 'clamp(1rem,5vw,1.75rem)' }}>
-                        {String(v).padStart(2, '0')}
-                      </span>
-                      <span className="block text-stone-300 font-semibold uppercase tracking-wider"
-                        style={{ fontSize: 'clamp(0.45rem,1.2vw,0.6rem)' }}>
-                        {l}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            {/* UPCOMING: countdown — isolated in its own memoized component;
+                the 1-second tick never re-renders the hero or video wrapper */}
+            {editionStatus === 'upcoming' && edition?.startDateGC && (
+              <HeroCountdown
+                targetDateGC={edition.startDateGC}
+                labels={{
+                  startsIn: t('hero.startsIn'),
+                  days:     t('hero.days'),
+                  hours:    t('hero.hours'),
+                  minutes:  t('hero.minutes'),
+                  seconds:  t('hero.seconds'),
+                }}
+              />
             )}
 
             {/* LIVE: happening-now — no card, just text + pulse dot */}
@@ -785,8 +680,12 @@ export const Home: React.FC = () => {
                 </NavLink>
                 <NavLink
                   to="/events"
-                  className="lift inline-flex items-center justify-center gap-2 rounded-2xl bg-white/10 text-white font-semibold border border-white/25 backdrop-blur-md hover:bg-white/18 transition-colors w-full sm:w-auto"
-                  style={{ padding: 'clamp(12px,1.6vh,14px) clamp(20px,4vw,28px)', fontSize: 'clamp(0.82rem,1.2vw,0.9rem)' }}
+                  className="lift inline-flex items-center justify-center gap-2 rounded-2xl text-white font-semibold border border-white/25 hover:bg-white/18 transition-colors w-full sm:w-auto lg:backdrop-blur-md"
+                  style={{
+                    padding: 'clamp(12px,1.6vh,14px) clamp(20px,4vw,28px)',
+                    fontSize: 'clamp(0.82rem,1.2vw,0.9rem)',
+                    background: 'rgba(255,255,255,0.12)',
+                  }}
                 >
                   <Compass className="h-4 w-4 text-[#D9A441] shrink-0" aria-hidden="true" />
                   {t('hero.exploreEvents')}
@@ -814,7 +713,8 @@ export const Home: React.FC = () => {
               onClick={toggleVideo}
               aria-label={t('hero.playVideo')}
               aria-hidden="false"
-              className="pointer-events-auto flex items-center justify-center w-16 h-16 rounded-full bg-black/50 border-2 border-white/40 backdrop-blur-md text-white hover:bg-black/70 hover:scale-105 transition-all focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-4"
+              className="pointer-events-auto flex items-center justify-center w-16 h-16 rounded-full border-2 border-white/40 text-white hover:scale-105 transition-all focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-4"
+              style={{ background: 'rgba(0,0,0,0.55)' }}
             >
               <Play className="h-7 w-7 ml-1 text-[#D9A441]" aria-hidden="true" />
             </button>
@@ -854,8 +754,6 @@ export const Home: React.FC = () => {
               onClick={() => {
                 setUseStaticPoster(false);
                 setIsPlaying(true);
-                // Attempt playback on the next render tick when <video> mounts
-                window.setTimeout(() => videoRef.current?.play().catch(() => {}), 50);
               }}
               aria-label={t('hero.playVideo')}
               className="flex items-center gap-1 text-stone-300 hover:text-white bg-black/40 hover:bg-black/60 px-2.5 py-1 rounded-lg border border-white/10 transition-colors"
@@ -865,8 +763,11 @@ export const Home: React.FC = () => {
             </button>
           )}
 
-          {/* Featured wonders — hidden on very small screens */}
-          <div className="hidden sm:flex items-center gap-1.5 text-stone-300 bg-black/45 backdrop-blur-md px-3 py-1 rounded-full border border-[#D9A441]/20">
+          {/* Featured wonders — hidden on very small screens; solid bg on mobile */}
+          <div
+            className="hidden sm:flex items-center gap-1.5 text-stone-300 px-3 py-1 rounded-full border border-[#D9A441]/20 lg:backdrop-blur-md"
+            style={{ background: 'rgba(0,0,0,0.50)' }}
+          >
             <span className="text-[#D9A441] font-bold uppercase" style={{ fontSize: 'clamp(0.55rem,0.9vw,0.65rem)', letterSpacing:'0.1em' }}>
               Wonders:
             </span>

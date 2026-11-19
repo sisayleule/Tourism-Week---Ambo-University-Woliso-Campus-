@@ -12,3 +12,8 @@ src/data/generated/snapshot.json
 
 # Large video files — host these on a CDN, not Git
 public/videos/
+
+# Source / archive media (large originals kept locally, never deployed)
+source-media/*.mp4
+source-media/*.mov
+source-media/*.avi

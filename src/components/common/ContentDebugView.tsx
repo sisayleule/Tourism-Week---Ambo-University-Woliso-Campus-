@@ -13,6 +13,7 @@ import { X, RefreshCw } from 'lucide-react';
 import { useEdition, useEvents } from '../../hooks/useTourismQueries';
 import { getCachedFetchedAt, getDebugInfo, resetBreaker } from '../../lib/liveContent';
 import { snapshot } from '../../lib/snapshot';
+import { getHeroVideoDebugSnapshot } from '../../lib/heroVideoDebugStore';
 
 // ─── Fetch the deployed content-meta.json at runtime ─────────────────────────
 
@@ -42,6 +43,7 @@ export const ContentDebugView: React.FC = () => {
   const [deployedMeta, setDeployedMeta] = useState<ContentMeta | null>(null);
   const [debugInfo, setDebugInfo] = useState(getDebugInfo());
   const [dismissed, setDismissed] = useState(false);
+  const [heroSnap, setHeroSnap] = useState(getHeroVideoDebugSnapshot());
 
   const { data: edition } = useEdition();
   const { data: events } = useEvents();
@@ -49,7 +51,10 @@ export const ContentDebugView: React.FC = () => {
   useEffect(() => {
     if (!isDebug) return;
     fetchDeployedMeta().then(setDeployedMeta);
-    const id = setInterval(() => setDebugInfo(getDebugInfo()), 2000);
+    const id = setInterval(() => {
+      setDebugInfo(getDebugInfo());
+      setHeroSnap(getHeroVideoDebugSnapshot());
+    }, 2000);
     return () => clearInterval(id);
   }, [isDebug]);
 
@@ -176,6 +181,46 @@ export const ContentDebugView: React.FC = () => {
               <Row label="eventCount"  value={events?.length ?? '—'} />
             </tbody>
           </table>
+        </section>
+
+        {/* Hero video */}
+        <section>
+          <p className="font-semibold text-[10px] uppercase tracking-wider text-stone-500 mb-1">
+            Hero video
+          </p>
+          {heroSnap == null ? (
+            <p className="text-stone-400 italic text-[11px]">No video mounted (poster-only mode or component not yet rendered).</p>
+          ) : (
+            <table className="w-full">
+              <tbody>
+                <Row label="chosenSrc"    value={heroSnap.chosenSrc || '—'} />
+                <Row label="reason"       value={heroSnap.chosenReason || '—'} />
+                <Row label="readyState"   value={heroSnap.readyState}
+                  highlight={heroSnap.readyState >= 0 && heroSnap.readyState < 2}
+                  warn={heroSnap.readyState === 2} />
+                <Row label="buffered"     value={
+                  heroSnap.bufferedRanges.length === 0
+                    ? 'none'
+                    : heroSnap.bufferedRanges.map(r => `${r.start.toFixed(1)}–${r.end.toFixed(1)}s`).join(', ')
+                } />
+                <Row label="stallCount"   value={heroSnap.stallCount}
+                  warn={heroSnap.stallCount > 0} highlight={heroSnap.stallCount >= 3} />
+                <Row label="guardFired"   value={heroSnap.stallGuardFired ? '⚠ YES — showing poster' : 'no'}
+                  highlight={heroSnap.stallGuardFired} />
+                <Row label="isPlaying"    value={heroSnap.isPlaying ? 'yes' : 'no'} />
+                <Row label="timeToFirst♟" value={
+                  heroSnap.timeToFirstPlaying != null
+                    ? `${heroSnap.timeToFirstPlaying.toFixed(0)} ms`
+                    : 'not played yet'
+                } warn={heroSnap.timeToFirstPlaying != null && heroSnap.timeToFirstPlaying > 3000} />
+                <Row label="droppedFrames" value={
+                  heroSnap.droppedFrames != null && heroSnap.totalFrames != null
+                    ? `${heroSnap.droppedFrames} / ${heroSnap.totalFrames}`
+                    : '—'
+                } warn={(heroSnap.droppedFrames ?? 0) > 10} />
+              </tbody>
+            </table>
+          )}
         </section>
 
       </div>

@@ -10,7 +10,7 @@
     "dev": "vite --port=3000 --host=0.0.0.0",
     "predev": "node scripts/build-content.mjs",
     "build": "vite build",
-    "prebuild": "node scripts/build-content.mjs",
+    "prebuild": "node scripts/build-content.mjs && node scripts/check-hero-media.mjs",
     "postbuild": "node scripts/seo-html.mjs && node scripts/build-health.mjs && node scripts/check-assets.mjs",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
@@ -31,6 +31,7 @@
     "audit:hero": "playwright test tests/hero-layout.spec.ts --reporter=list",
     "content:lint": "node scripts/content-lint.mjs",
     "build:health": "node scripts/build-health.mjs",
+    "check:hero-media": "node scripts/check-hero-media.mjs",
     "images:optimize": "node scripts/optimize-images.mjs",
     "csp:generate": "node scripts/generate-vercel-json.mjs"
   },

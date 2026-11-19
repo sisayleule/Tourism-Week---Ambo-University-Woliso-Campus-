@@ -154,9 +154,13 @@ export const Footer: React.FC = () => {
 
         {/* Bottom strip */}
         <hr className="hairline mt-14 mb-8" />
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500">
-          <p>© {new Date().getFullYear()} {t('common.copyright')}</p>
-          <p className="text-stone-600">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-stone-500">
+          <p>
+            © {new Date().getFullYear()} Ambo University Woliso Campus Tourism Week
+            <span className="mx-2 text-stone-700" aria-hidden="true">·</span>
+            Developed by <span className="text-stone-400 font-medium">Sisay Leule</span>
+          </p>
+          <p className="text-stone-600 hidden sm:block">
             {edition
               ? `${edition.editionNameI18n[currentLang] ?? edition.editionNameI18n.en} · ${edition.dateRangeDisplayI18n[currentLang] ?? edition.dateRangeDisplayI18n.en}`
               : '5th Annual Tourism Celebration · Megabit 29 – Miyazya 04, 2017 E.C.'}

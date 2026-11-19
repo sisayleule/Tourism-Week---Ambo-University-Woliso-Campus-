@@ -524,7 +524,7 @@ function EditView({ editionId, onCancel, onSaved }: { editionId: string; onCance
           <Field label="Hero background video URL (MP4)" id="hvurl">
             <input id="hvurl" type="text" value={heroVideoUrl} onChange={e => { setHeroVideo(e.target.value); mark() }} className={fullInputCls} placeholder="https://…" />
             <p className="mt-1 text-[11px] text-[var(--text-muted)] leading-relaxed">
-              Use a short loop (10 to 12 seconds), 720p or smaller, under 5 MB, no sound.
+              Use 720p or smaller, under 20 MB, no sound.
               Large videos stutter on phones.{' '}
               <strong className="text-amber-600 dark:text-amber-400">Do not host videos in Supabase Storage</strong>
               {' '}— use a CDN or leave blank for the default.

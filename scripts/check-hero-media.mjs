@@ -25,7 +25,7 @@ const FILES = [
   { name: 'hero-480-v2.mp4', desc: 'mobile 480p'  },
 ]
 
-const MAX_SIZE_BYTES  = 6 * 1024 * 1024   // 6 MB
+const MAX_SIZE_BYTES  = 20 * 1024 * 1024   // 20 MB — full-length background video (≤ 67 s)
 const SCAN_BYTES      = 64 * 1024          // read first 64 KB to find box headers
 const HEADER_BUF_SIZE = SCAN_BYTES
 
@@ -110,8 +110,8 @@ for (const { name, desc } of FILES) {
   const { size } = statSync(filePath)
   const sizeMB   = (size / 1024 / 1024).toFixed(2)
   if (size > MAX_SIZE_BYTES) {
-    fail(`${name} is ${sizeMB} MB — exceeds the 6 MB limit`)
-    fail(`  → Re-encode with a higher CRF value (e.g. --crf 30) or trim to ≤12 s.`)
+    fail(`${name} is ${sizeMB} MB — exceeds the 20 MB limit`)
+    fail(`  → Re-encode with a higher CRF value (e.g. --crf 38) or reduce resolution.`)
   } else {
     pass(`${name} size: ${sizeMB} MB (≤ 6 MB)`)
   }

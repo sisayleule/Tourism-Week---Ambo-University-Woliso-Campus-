@@ -90,6 +90,18 @@ export function resetBreaker(): void {
   try { sessionStorage.removeItem(CB_KEY); } catch { /* ignore */ }
 }
 
+/**
+ * Clear the localStorage live-content cache.
+ *
+ * Call this after any staff save (section upsert/publish/reset, edition update)
+ * so the public site doesn't serve stale data from the cache on the next page
+ * load or React Query refetch. The next call to fetchLiveContent() will fetch
+ * fresh data from Supabase and re-populate the cache.
+ */
+export function clearLiveCache(): void {
+  try { localStorage.removeItem(CACHE_KEY); } catch { /* ignore */ }
+}
+
 // ─── localStorage cache ───────────────────────────────────────────────────────
 
 const CACHE_KEY = 'tw_live_snapshot';

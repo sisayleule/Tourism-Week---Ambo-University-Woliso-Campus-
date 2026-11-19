@@ -11,6 +11,8 @@ import {
 } from '@tanstack/react-query'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { scheduleDeploy } from '../lib/deployScheduler'
+import { clearLiveCache } from '../../lib/liveContent'
+import { QUERY_KEYS_EXTRA } from '../../hooks/useTourismQueries'
 import {
   fetchAllSections,
   fetchSectionByKey,
@@ -84,9 +86,13 @@ export function useUpsertSection(client: SupabaseClient) {
     mutationFn: (p: { input: SectionInput; loadedUpdatedAt?: string }) =>
       upsertSection(client, p.input, p.loadedUpdatedAt),
     onSuccess: (_, vars) => {
+      clearLiveCache()
       qc.invalidateQueries({ queryKey: sectionKeys.all })
       qc.invalidateQueries({ queryKey: sectionKeys.byKey(vars.input.key) })
       qc.invalidateQueries({ queryKey: sectionKeys.needsReview })
+      // Bust the public-side React Query cache so mounted useSection() hooks refetch
+      qc.invalidateQueries({ queryKey: QUERY_KEYS_EXTRA.section(vars.input.key) })
+      qc.invalidateQueries({ queryKey: QUERY_KEYS_EXTRA.sections })
       scheduleDeploy()
     },
   })
@@ -98,9 +104,12 @@ export function usePublishSection(client: SupabaseClient) {
     mutationFn: (p: { key: string; loadedUpdatedAt: string }) =>
       publishSection(client, p.key, p.loadedUpdatedAt),
     onSuccess: (_, vars) => {
+      clearLiveCache()
       qc.invalidateQueries({ queryKey: sectionKeys.all })
       qc.invalidateQueries({ queryKey: sectionKeys.byKey(vars.key) })
       qc.invalidateQueries({ queryKey: sectionKeys.needsReview })
+      qc.invalidateQueries({ queryKey: QUERY_KEYS_EXTRA.section(vars.key) })
+      qc.invalidateQueries({ queryKey: QUERY_KEYS_EXTRA.sections })
       scheduleDeploy()
     },
   })
@@ -112,8 +121,11 @@ export function useUnpublishSection(client: SupabaseClient) {
     mutationFn: (p: { key: string; loadedUpdatedAt: string }) =>
       unpublishSection(client, p.key, p.loadedUpdatedAt),
     onSuccess: (_, vars) => {
+      clearLiveCache()
       qc.invalidateQueries({ queryKey: sectionKeys.all })
       qc.invalidateQueries({ queryKey: sectionKeys.byKey(vars.key) })
+      qc.invalidateQueries({ queryKey: QUERY_KEYS_EXTRA.section(vars.key) })
+      qc.invalidateQueries({ queryKey: QUERY_KEYS_EXTRA.sections })
       scheduleDeploy()
     },
   })
@@ -125,8 +137,11 @@ export function useResetSection(client: SupabaseClient) {
     mutationFn: (p: { key: string; defaultInput: SectionInput }) =>
       resetSectionToDefault(client, p.key, p.defaultInput),
     onSuccess: (_, vars) => {
+      clearLiveCache()
       qc.invalidateQueries({ queryKey: sectionKeys.all })
       qc.invalidateQueries({ queryKey: sectionKeys.byKey(vars.key) })
+      qc.invalidateQueries({ queryKey: QUERY_KEYS_EXTRA.section(vars.key) })
+      qc.invalidateQueries({ queryKey: QUERY_KEYS_EXTRA.sections })
       scheduleDeploy()
     },
   })
@@ -137,7 +152,9 @@ export function useCreateSectionItem(client: SupabaseClient) {
   return useMutation({
     mutationFn: (input: SectionItemInput) => createSectionItem(client, input),
     onSuccess: (data) => {
+      clearLiveCache()
       qc.invalidateQueries({ queryKey: sectionKeys.items(data.section_id) })
+      qc.invalidateQueries({ queryKey: QUERY_KEYS_EXTRA.sections })
       scheduleDeploy()
     },
   })
@@ -149,7 +166,9 @@ export function useUpdateSectionItem(client: SupabaseClient) {
     mutationFn: (p: { id: string; sectionId: string; patch: Partial<SectionItemInput> }) =>
       updateSectionItem(client, p.id, p.patch),
     onSuccess: (_, vars) => {
+      clearLiveCache()
       qc.invalidateQueries({ queryKey: sectionKeys.items(vars.sectionId) })
+      qc.invalidateQueries({ queryKey: QUERY_KEYS_EXTRA.sections })
       scheduleDeploy()
     },
   })
@@ -161,7 +180,9 @@ export function useDeleteSectionItem(client: SupabaseClient) {
     mutationFn: (p: { id: string; sectionId: string }) =>
       deleteSectionItem(client, p.id),
     onSuccess: (_, vars) => {
+      clearLiveCache()
       qc.invalidateQueries({ queryKey: sectionKeys.items(vars.sectionId) })
+      qc.invalidateQueries({ queryKey: QUERY_KEYS_EXTRA.sections })
       scheduleDeploy()
     },
   })
@@ -175,7 +196,9 @@ export function useReplaceSectionItems(client: SupabaseClient) {
       items: Omit<SectionItemInput, 'section_id'>[]
     }) => replaceSectionItems(client, p.sectionId, p.items),
     onSuccess: (_, vars) => {
+      clearLiveCache()
       qc.invalidateQueries({ queryKey: sectionKeys.items(vars.sectionId) })
+      qc.invalidateQueries({ queryKey: QUERY_KEYS_EXTRA.sections })
       scheduleDeploy()
     },
   })

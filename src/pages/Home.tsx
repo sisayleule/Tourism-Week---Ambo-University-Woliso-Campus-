@@ -260,19 +260,37 @@ export const Home: React.FC = () => {
     if (useStaticPoster) return;           // already showing poster
     const vid = videoRef.current;
     if (!vid) return;
-    // play() returns a Promise on modern browsers; rejection means blocked
-    const promise = vid.play();
-    if (promise !== undefined) {
-      promise.catch((err: Error) => {
-        if (err.name === 'NotAllowedError') {
-          // Browser blocked autoplay — show poster + manual Play button
-          setAutoplayBlocked(true);
-          setIsPlaying(false);
-        }
-        // NotSupportedError / AbortError → let onError handler deal with it
-      });
+
+    // For remote URLs the video may not be buffered yet when the component
+    // mounts, so calling play() immediately causes an AbortError that we
+    // cannot distinguish from a policy NotAllowedError.  Instead we wait
+    // for the 'canplay' event (browser has buffered enough to start), then
+    // attempt play().  If the video is already ready (readyState ≥ 3) we
+    // call play() straight away.
+    const attemptPlay = () => {
+      const promise = vid.play();
+      if (promise !== undefined) {
+        promise.catch((err: Error) => {
+          if (err.name === 'NotAllowedError') {
+            // Browser policy blocked autoplay — show poster + manual Play button
+            setAutoplayBlocked(true);
+            setIsPlaying(false);
+          }
+          // AbortError / NotSupportedError → onError handler or user clicks Play
+        });
+      }
+    };
+
+    if (vid.readyState >= 3) {
+      // HAVE_FUTURE_DATA or better — safe to play immediately
+      attemptPlay();
+    } else {
+      vid.addEventListener('canplay', attemptPlay, { once: true });
     }
-    // No cleanup needed — we only call play() once after mount
+
+    return () => {
+      vid.removeEventListener('canplay', attemptPlay);
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [useStaticPoster]);
 

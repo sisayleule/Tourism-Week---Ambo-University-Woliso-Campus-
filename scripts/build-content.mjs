@@ -21,6 +21,8 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync, copyFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { gzipSync } from 'node:zlib';
+import { execSync } from 'node:child_process';
 import dotenv from 'dotenv';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -673,8 +675,6 @@ ${urls
 
 // ─── Gzip size helper ────────────────────────────────────────────────────────
 
-import { gzipSync } from 'node:zlib';
-
 function gzipSize(str) {
   return gzipSync(Buffer.from(str)).length;
 }
@@ -687,10 +687,51 @@ function formatBytes(bytes) {
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 
+// ─── Build identity (injected by Vercel, or git at build time) ───────────────
+
+const VERCEL_ENV            = process.env.VERCEL_ENV             || '';   // 'production' | 'preview' | ''
+const VERCEL_GIT_COMMIT_SHA = process.env.VERCEL_GIT_COMMIT_SHA  || '';
+const BUILD_TIME            = new Date().toISOString();
+
+// Short SHA: Vercel injects VERCEL_GIT_COMMIT_SHA; fall back to `git rev-parse`.
+const COMMIT_SHA_SHORT = VERCEL_GIT_COMMIT_SHA
+  ? VERCEL_GIT_COMMIT_SHA.slice(0, 7)
+  : (() => {
+      try {
+        return execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] })
+          .toString()
+          .trim();
+      } catch {
+        return 'local';
+      }
+    })();
+
 async function main() {
   console.log('\n╔══════════════════════════════════════════════════════════════╗');
   console.log('║  build-content — Tourism Week content snapshot generator      ║');
   console.log('╚══════════════════════════════════════════════════════════════╝\n');
+
+  // ── Environment report ───────────────────────────────────────────────────
+  const supabaseHost = SUPABASE_URL
+    ? (() => { try { return new URL(SUPABASE_URL).host; } catch { return SUPABASE_URL; } })()
+    : '(not set)';
+  console.log(`  ℹ VERCEL_ENV        : ${VERCEL_ENV || '(local)'}`);
+  console.log(`  ℹ Supabase host     : ${supabaseHost}`);
+  console.log(`  ℹ VITE_SUPABASE_URL : ${SUPABASE_URL ? '✓ present' : '✗ MISSING'}`);
+  console.log(`  ℹ VITE_SUPABASE_ANON_KEY : ${ANON_KEY ? '✓ present' : '✗ MISSING'}`);
+  console.log(`  ℹ Build time        : ${BUILD_TIME}`);
+  console.log(`  ℹ Commit SHA        : ${COMMIT_SHA_SHORT}`);
+
+  // ── Hard-fail on Production when env vars are missing ────────────────────
+  // Preview builds are allowed to fall back to last-good (branch previews may
+  // not have secrets configured); Production must always fetch fresh data.
+  if (VERCEL_ENV === 'production' && (!SUPABASE_URL || !ANON_KEY)) {
+    console.error('\n  ✖ FATAL: Production Vercel build is missing Supabase environment variables.');
+    console.error('  ✖ Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in:');
+    console.error('       Vercel dashboard → Your project → Settings → Environment Variables');
+    console.error('       (scope: Production — or All Environments)\n');
+    process.exit(1);
+  }
 
   mkdirSync(GENERATED_DIR, { recursive: true });
   mkdirSync(join(ROOT, 'public'), { recursive: true });
@@ -701,7 +742,7 @@ async function main() {
 
   // ── Step 1: Fresh data from Supabase ──────────────────────────────────────
   if (SUPABASE_URL && ANON_KEY) {
-    console.log('  → Fetching fresh content from Supabase...');
+    console.log(`\n  → Fetching fresh content from ${supabaseHost}…`);
     try {
       snapshot = await fetchFreshSnapshot();
       if (!sanityCheck(snapshot, loadLastGood())) {
@@ -713,10 +754,18 @@ async function main() {
       }
     } catch (err) {
       console.warn(`  ⚠ Supabase fetch failed: ${err.message}`);
+      // On Production, a fetch failure is fatal — don't ship stale data silently.
+      if (VERCEL_ENV === 'production') {
+        console.error('\n  ✖ FATAL: Production build could not fetch content from Supabase.');
+        console.error(`  ✖ Error: ${err.message}`);
+        console.error('  ✖ Check that VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are correct');
+        console.error('    and that the Supabase project is not paused.\n');
+        process.exit(1);
+      }
       snapshot = null;
     }
   } else {
-    console.warn('  ⚠ VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY not set');
+    console.warn('  ⚠ VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY not set — skipping live fetch');
   }
 
   // ── Step 2: Last-good fallback ────────────────────────────────────────────
@@ -772,8 +821,10 @@ async function main() {
   const rawSize = Buffer.byteLength(snapshotJson, 'utf-8');
   const gzSize = gzipSize(snapshotJson);
   console.log(`\n  📦 snapshot.json: ${formatBytes(rawSize)} raw, ${formatBytes(gzSize)} gzipped`);
-  if (gzSize > 100 * 1024) {
-    console.warn('  ⚠ Snapshot exceeds 100 kB gzipped — consider switching to a lazy chunk');
+  if (gzSize > 150 * 1024) {
+    console.warn('  ⚠ Snapshot exceeds 150 kB gzipped — split into core + lazy requests');
+  } else if (gzSize > 100 * 1024) {
+    console.warn('  ⚠ Snapshot exceeds 100 kB gzipped — approaching the 150 kB limit');
   }
 
   // ── Write content-meta.json ──────────────────────────────────────────────
@@ -782,9 +833,11 @@ async function main() {
     source:      snapshot.source,
     editionId:   snapshot.edition?.id ?? null,
     eventCount:  snapshot.events.length,
+    commitSha:   COMMIT_SHA_SHORT,
+    buildTime:   BUILD_TIME,
   };
   writeFileSync(META_PATH, JSON.stringify(meta, null, 2), 'utf-8');
-  console.log(`  📄 content-meta.json: source=${meta.source} events=${meta.eventCount}`);
+  console.log(`  📄 content-meta.json: source=${meta.source} events=${meta.eventCount} commit=${meta.commitSha}`);
 
   // ── Generate sitemap.xml ──────────────────────────────────────────────────
   const sitemapXml = generateSitemap(snapshot, SITE_URL);

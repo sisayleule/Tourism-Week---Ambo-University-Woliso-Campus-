@@ -16,6 +16,7 @@ import { RequireStaff }           from './auth/guards'
 import { StaffLayout }            from './components/StaffLayout'
 import { ToastProvider }          from './components/Toast'
 import { ConfirmPasswordProvider } from './components/ConfirmPasswordModal'
+import { GlobalSaveConfirmation } from './components/GlobalSaveConfirmation'
 import { PortalProvider }         from './context/PortalContext'
 import { supabaseStaff }          from '../lib/supabaseStaff'
 
@@ -72,6 +73,7 @@ export default function StaffRouter() {
               >
                 <ConfirmPasswordProvider>
                   <ToastProvider>
+                    <GlobalSaveConfirmation />
                     <StaffLayout />
                   </ToastProvider>
                 </ConfirmPasswordProvider>

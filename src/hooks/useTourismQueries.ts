@@ -26,6 +26,13 @@ import type { SectionSnapshot, PastEditionSnapshot, EditionDaySnapshot } from '.
 // ─── staleTime: 30 s — live layer refreshes the cache; snapshot is the floor ─
 const STALE_MS = 30_000;
 
+// Setting initialDataUpdatedAt to 0 makes TanStack Query treat the
+// initialData as already-stale on first mount, so it triggers a background
+// fetch immediately instead of waiting for staleTime to elapse.  The
+// snapshot/localStorage value is shown instantly (no flicker) while the live
+// fetch races in behind it.
+const INITIAL_DATA_UPDATED_AT = 0;
+
 export const QUERY_KEYS = {
   edition: ['edition'] as const,
   events: ['events'] as const,
@@ -47,9 +54,13 @@ export const QUERY_KEYS_EXTRA = {
 };
 
 // Helper: return the localStorage-cached live snapshot if fresher, else the
-// build-time snapshot, as the initialData for a query.  This gives returning
-// visitors recent content immediately without waiting for the first live fetch.
-function bestInitial<T>(snapValue: T, liveSelector: (s: ReturnType<typeof getCachedLiveSnapshot>) => T | undefined): T {
+// build-time snapshot, as the initialData for a query.
+// initialDataUpdatedAt:0 is set on every query so TanStack Query treats this
+// data as already-stale and fires a background fetch on first mount.
+function bestInitial<T>(
+  snapValue: T,
+  liveSelector: (s: ReturnType<typeof getCachedLiveSnapshot>) => T | undefined,
+): T {
   const cached = getCachedLiveSnapshot();
   if (!cached) return snapValue;
   return liveSelector(cached) ?? snapValue;
@@ -64,6 +75,7 @@ export function useEdition() {
       snapshot.edition ?? undefined,
       (c) => c?.edition ?? undefined,
     ),
+    initialDataUpdatedAt: INITIAL_DATA_UPDATED_AT,
   });
 }
 
@@ -73,6 +85,7 @@ export function useEvents() {
     queryFn: getEvents,
     staleTime: STALE_MS,
     initialData: () => bestInitial(snapshot.events, (c) => c?.events),
+    initialDataUpdatedAt: INITIAL_DATA_UPDATED_AT,
   });
 }
 
@@ -86,6 +99,7 @@ export function useEvent(slug: string) {
       const cached = getCachedLiveSnapshot();
       return (cached?.events ?? snapshot.events).find((e) => e.slug === slug) ?? undefined;
     },
+    initialDataUpdatedAt: INITIAL_DATA_UPDATED_AT,
   });
 }
 
@@ -95,6 +109,7 @@ export function useNews() {
     queryFn: getNews,
     staleTime: STALE_MS,
     initialData: () => bestInitial(snapshot.news, (c) => c?.news),
+    initialDataUpdatedAt: INITIAL_DATA_UPDATED_AT,
   });
 }
 
@@ -108,6 +123,7 @@ export function useNewsArticle(slug: string) {
       const cached = getCachedLiveSnapshot();
       return (cached?.news ?? snapshot.news).find((n) => n.slug === slug) ?? undefined;
     },
+    initialDataUpdatedAt: INITIAL_DATA_UPDATED_AT,
   });
 }
 
@@ -117,6 +133,7 @@ export function useGallery() {
     queryFn: getGallery,
     staleTime: STALE_MS,
     initialData: () => bestInitial(snapshot.gallery, (c) => c?.gallery),
+    initialDataUpdatedAt: INITIAL_DATA_UPDATED_AT,
   });
 }
 
@@ -126,6 +143,7 @@ export function useSponsors() {
     queryFn: getSponsors,
     staleTime: STALE_MS,
     initialData: () => bestInitial(snapshot.sponsors, (c) => c?.sponsors),
+    initialDataUpdatedAt: INITIAL_DATA_UPDATED_AT,
   });
 }
 
@@ -135,6 +153,7 @@ export function useCommittee() {
     queryFn: getCommittee,
     staleTime: STALE_MS,
     initialData: () => bestInitial(snapshot.committee, (c) => c?.committee),
+    initialDataUpdatedAt: INITIAL_DATA_UPDATED_AT,
   });
 }
 
@@ -144,6 +163,7 @@ export function useFAQs() {
     queryFn: getFAQs,
     staleTime: STALE_MS,
     initialData: () => bestInitial(snapshot.faqs, (c) => c?.faqs),
+    initialDataUpdatedAt: INITIAL_DATA_UPDATED_AT,
   });
 }
 
@@ -153,6 +173,7 @@ export function useAnnouncements() {
     queryFn: getAnnouncements,
     staleTime: STALE_MS,
     initialData: () => bestInitial(snapshot.announcements, (c) => c?.announcements),
+    initialDataUpdatedAt: INITIAL_DATA_UPDATED_AT,
   });
 }
 
@@ -162,6 +183,7 @@ export function useSiteSettings() {
     queryFn: getSiteSettings,
     staleTime: STALE_MS,
     initialData: () => bestInitial(snapshot.siteSettings, (c) => c?.siteSettings),
+    initialDataUpdatedAt: INITIAL_DATA_UPDATED_AT,
   });
 }
 
@@ -180,6 +202,7 @@ export function useSection(key: string) {
       const sections = cached?.sections ?? snapshot.sections ?? [];
       return sections.find((s) => s.key === key && s.state === 'published');
     },
+    initialDataUpdatedAt: INITIAL_DATA_UPDATED_AT,
   });
 }
 
@@ -193,6 +216,7 @@ export function useSections() {
       const cached = getCachedLiveSnapshot();
       return cached?.sections ?? snapshot.sections ?? [];
     },
+    initialDataUpdatedAt: INITIAL_DATA_UPDATED_AT,
   });
 }
 
@@ -214,6 +238,7 @@ export function usePastEditions() {
         (e) => e.state === 'published',
       ) as PastEditionSnapshot[];
     },
+    initialDataUpdatedAt: INITIAL_DATA_UPDATED_AT,
   });
 }
 
@@ -242,10 +267,12 @@ export function useEditionDays() {
       const cached = getCachedLiveSnapshot();
       return cached?.editionDays ?? snapshot.editionDays ?? [];
     },
+    initialDataUpdatedAt: INITIAL_DATA_UPDATED_AT,
   });
 }
 
-export function useEventStatusSwitcher() {  const queryClient = useQueryClient();
+export function useEventStatusSwitcher() {
+  const queryClient = useQueryClient();
   const currentOverride = getSimulatedStatus();
 
   const changeStatus = (status: EditionStatus | null) => {

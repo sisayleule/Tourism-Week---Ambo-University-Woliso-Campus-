@@ -12,6 +12,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 import { scheduleDeploy } from '../lib/deployScheduler'
+import { notifySaved } from '../lib/saveEvents'
 import {
   fetchEditions,
   fetchCurrentEdition,
@@ -102,6 +103,7 @@ export function useCreateEvent() {
       qc.invalidateQueries({ queryKey: staffKeys.events(vars.edition_id) })
       qc.invalidateQueries({ queryKey: ['staff', 'dashboard'] })
       scheduleDeploy()
+      notifySaved()
     },
   })
 }
@@ -119,6 +121,7 @@ export function useUpdateEvent(editionId: string) {
       qc.invalidateQueries({ queryKey: ['staff', 'event'] })
       qc.invalidateQueries({ queryKey: ['staff', 'dashboard'] })
       scheduleDeploy()
+      notifySaved()
     },
   })
 }
@@ -162,6 +165,8 @@ export function useUpdateEventStatus(editionId: string) {
     onSettled: () => {
       qc.invalidateQueries({ queryKey: staffKeys.events(editionId) })
       qc.invalidateQueries({ queryKey: ['staff', 'dashboard'] })
+      // Status changes are served live; notify even though no rebuild fires
+      notifySaved()
     },
   })
 }
@@ -174,6 +179,7 @@ export function useReorderEvents(editionId: string) {
       qc.invalidateQueries({ queryKey: staffKeys.events(editionId) })
       qc.invalidateQueries({ queryKey: ['staff', 'dashboard'] })
       scheduleDeploy()
+      notifySaved()
     },
   })
 }
@@ -186,6 +192,7 @@ export function useDeleteEvent(editionId: string) {
       qc.invalidateQueries({ queryKey: staffKeys.events(editionId) })
       qc.invalidateQueries({ queryKey: ['staff', 'dashboard'] })
       scheduleDeploy()
+      notifySaved()
     },
   })
 }
@@ -221,6 +228,7 @@ export function useCreateAnnouncement() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: staffKeys.announcements })
       qc.invalidateQueries({ queryKey: ['staff', 'dashboard'] })
+      notifySaved()
     },
   })
 }
@@ -236,6 +244,7 @@ export function useUpdateAnnouncement() {
       qc.invalidateQueries({ queryKey: staffKeys.announcements })
       qc.invalidateQueries({ queryKey: ['staff', 'announcement'] })
       qc.invalidateQueries({ queryKey: ['staff', 'dashboard'] })
+      notifySaved()
     },
   })
 }
@@ -247,6 +256,7 @@ export function useDeleteAnnouncement() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: staffKeys.announcements })
       qc.invalidateQueries({ queryKey: ['staff', 'dashboard'] })
+      notifySaved()
     },
   })
 }
@@ -258,6 +268,7 @@ export function useUnpublishAnnouncement() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: staffKeys.announcements })
       qc.invalidateQueries({ queryKey: ['staff', 'dashboard'] })
+      notifySaved()
     },
   })
 }

@@ -8,12 +8,14 @@
  *   updating         — blue bar: "Updating… (1–2 min)"
  *   error            — red bar with plain-language error message
  *
- * WebsiteSyncDashboardCard — richer card for the dashboard.
+ * WebsiteSyncDashboardCard — richer card for the dashboard (includes
+ *   "Check live site" button powered by useLiveSaveConfirmation).
  */
 
 import React, { useState } from 'react'
-import { RefreshCw, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react'
+import { RefreshCw, CheckCircle2, AlertCircle, Loader2, Globe } from 'lucide-react'
 import { useWebsiteSync } from '../hooks/useWebsiteSync'
+import { useLiveSaveConfirmation } from '../hooks/useLiveSaveConfirmation'
 
 // ─── Error plain-language mapper ─────────────────────────────────────────────
 
@@ -103,6 +105,7 @@ export const WebsiteSyncDashboardCard: React.FC = () => {
     deployError, triggerDeploy,
   } = useWebsiteSync()
   const [triggering, setTriggering] = useState(false)
+  const { state: cvState, label: cvLabel, check: checkLive } = useLiveSaveConfirmation()
 
   const handleTrigger = async () => {
     setTriggering(true)
@@ -131,6 +134,13 @@ export const WebsiteSyncDashboardCard: React.FC = () => {
     : status === 'loading'       ? <Loader2 size={14} className="animate-spin" />
     : <AlertCircle size={14} />
 
+  // Colour the live-check result
+  const cvColor = cvState === 'confirmed'
+    ? 'text-emerald-600 dark:text-emerald-400'
+    : cvState === 'error' || cvState === 'timeout'
+    ? 'text-red-600 dark:text-red-400'
+    : 'text-stone-500 dark:text-stone-400'
+
   return (
     <div className="bg-white dark:bg-[#12221C] border border-stone-200 dark:border-stone-800 rounded-2xl p-4 space-y-3">
       <div className="flex items-center justify-between gap-2">
@@ -152,6 +162,23 @@ export const WebsiteSyncDashboardCard: React.FC = () => {
       <div className="grid grid-cols-2 gap-2 text-[10px] text-stone-500 dark:text-stone-400">
         <span>Last built: <strong className="text-stone-700 dark:text-stone-300">{fmtTime(generatedAt)}</strong></span>
         <span>Last change: <strong className="text-stone-700 dark:text-stone-300">{fmtTime(lastChangeAt)}</strong></span>
+      </div>
+
+      {/* Check live site */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <button
+          onClick={checkLive}
+          disabled={cvState === 'saving' || cvState === 'polling'}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-stone-200 dark:border-stone-700 text-xs font-medium text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-60 transition-colors"
+        >
+          {cvState === 'polling' || cvState === 'saving'
+            ? <Loader2 size={11} className="animate-spin" />
+            : <Globe size={11} />}
+          Check live site
+        </button>
+        {cvState !== 'idle' && (
+          <span className={`text-[11px] ${cvColor}`}>{cvLabel}</span>
+        )}
       </div>
 
       {status === 'changes-waiting' && (

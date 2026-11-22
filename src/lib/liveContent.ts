@@ -6,10 +6,12 @@
  * matching the same Snapshot shape already used by the build-time pipeline.
  *
  * Rules enforced here:
- *  · 3-second timeout — a paused project never blocks the page.
- *  · Circuit breaker — on any failure (timeout, network, 5xx) the breaker
- *    trips for 10 minutes, stored in sessionStorage, so the site stops
- *    retrying immediately and reads from the snapshot instead.
+ *  · 8-second timeout per attempt — a paused project never blocks the page.
+ *  · Retry with backoff before opening the breaker: 2 s, 5 s, 15 s delays.
+ *  · Circuit breaker opens only after 3 consecutive failures; stays open for
+ *    60 seconds then auto-heals.  Stored in sessionStorage so each page load
+ *    (new navigation) ALWAYS gets one fresh attempt even if the previous page
+ *    had failures — the page-load flag is reset on every module init.
  *  · localStorage cache — a successful live fetch is persisted so returning
  *    visitors get recent content on first paint before the next fetch resolves.
  *  · Never throws to callers — always returns null on failure.
@@ -43,23 +45,44 @@ const RPC_URL = SUPABASE_URL
   : '';
 
 // ─── Circuit breaker ─────────────────────────────────────────────────────────
+//
+// Design:
+//  · failCount: in-memory counter of consecutive failures this module lifetime.
+//  · Max failures before opening: 3.
+//  · Once open, stored in sessionStorage so the interval-based poll respects it.
+//    But: the first attempt of a *new page load* always bypasses the breaker
+//    (pageLoadAttempted flag resets on every module initialisation).
+//  · Open duration: 60 seconds (not 10 minutes).  Any success closes it.
+//  · Backoff delays between retries: 2 s, 5 s, 15 s.
 
-const CB_KEY       = 'tw_live_cb';          // sessionStorage key
-const CB_DURATION  = 10 * 60 * 1000;        // 10 minutes in ms
+const CB_KEY          = 'tw_live_cb';
+const CB_DURATION_MS  = 60_000;        // 60 seconds open window
+const MAX_FAILURES    = 3;             // open after this many consecutive failures
+const RETRY_DELAYS_MS = [2_000, 5_000, 15_000]; // delays before attempts 2, 3, 4
+
+// In-memory state — reset every page load
+let failCount        = 0;
+let pageLoadAttempted = false; // true after the first attempt this page load
 
 export interface CircuitBreakerEntry {
   trippedAt:  number;
   httpStatus: number | null;   // null = network/timeout error
   errorText:  string;
+  failCount:  number;
 }
 
+/** Returns true if the breaker is open AND the page-load bypass has already fired. */
 export function isBreakerOpen(): boolean {
+  // First attempt of a new page load always gets through (bypass).
+  if (!pageLoadAttempted) return false;
   try {
     const raw = sessionStorage.getItem(CB_KEY);
     if (!raw) return false;
     const entry: CircuitBreakerEntry = JSON.parse(raw);
-    if (Date.now() - entry.trippedAt < CB_DURATION) return true;
+    if (Date.now() - entry.trippedAt < CB_DURATION_MS) return true;
+    // Auto-heal — expired
     sessionStorage.removeItem(CB_KEY);
+    failCount = 0;
     return false;
   } catch {
     return false;
@@ -71,32 +94,60 @@ export function getBreakerEntry(): CircuitBreakerEntry | null {
     const raw = sessionStorage.getItem(CB_KEY);
     if (!raw) return null;
     const entry: CircuitBreakerEntry = JSON.parse(raw);
-    if (Date.now() - entry.trippedAt < CB_DURATION) return entry;
+    if (Date.now() - entry.trippedAt < CB_DURATION_MS) return entry;
     return null;
   } catch {
     return null;
   }
 }
 
-function tripBreaker(httpStatus: number | null, errorText: string): void {
-  try {
-    const entry: CircuitBreakerEntry = { trippedAt: Date.now(), httpStatus, errorText };
-    sessionStorage.setItem(CB_KEY, JSON.stringify(entry));
-  } catch { /* sessionStorage quota — ignore */ }
+/** Record a success — closes the breaker and resets failure count. */
+function recordSuccess(): void {
+  failCount = 0;
+  try { sessionStorage.removeItem(CB_KEY); } catch { /* ignore */ }
+}
+
+/** Record a failure. Opens the breaker once MAX_FAILURES is reached. */
+function recordFailure(httpStatus: number | null, errorText: string): void {
+  failCount += 1;
+  if (failCount >= MAX_FAILURES) {
+    try {
+      const entry: CircuitBreakerEntry = {
+        trippedAt: Date.now(),
+        httpStatus,
+        errorText,
+        failCount,
+      };
+      sessionStorage.setItem(CB_KEY, JSON.stringify(entry));
+    } catch { /* quota */ }
+  }
 }
 
 /** Clear the circuit breaker so the next fetch retries immediately. */
 export function resetBreaker(): void {
+  failCount = 0;
+  pageLoadAttempted = false;
   try { sessionStorage.removeItem(CB_KEY); } catch { /* ignore */ }
+}
+
+/** Time remaining (ms) until the breaker auto-heals, or 0 if closed. */
+export function breakerOpenUntil(): number | null {
+  try {
+    const raw = sessionStorage.getItem(CB_KEY);
+    if (!raw) return null;
+    const entry: CircuitBreakerEntry = JSON.parse(raw);
+    const until = entry.trippedAt + CB_DURATION_MS;
+    return until > Date.now() ? until : null;
+  } catch {
+    return null;
+  }
 }
 
 /**
  * Clear the localStorage live-content cache.
  *
- * Call this after any staff save (section upsert/publish/reset, edition update)
- * so the public site doesn't serve stale data from the cache on the next page
- * load or React Query refetch. The next call to fetchLiveContent() will fetch
- * fresh data from Supabase and re-populate the cache.
+ * Call this after any staff save so the public site doesn't serve stale
+ * data from the cache on the next page load or React Query refetch.
  */
 export function clearLiveCache(): void {
   try { localStorage.removeItem(CACHE_KEY); } catch { /* ignore */ }
@@ -165,7 +216,7 @@ function computeEditionStatus(startDateGC: string, endDateGC: string): 'upcoming
   // Compute in Africa/Addis_Ababa (UTC+3, no DST)
   const addisNow = new Date(Date.now() + 3 * 60 * 60 * 1000);
   const today = addisNow.toISOString().split('T')[0];
-  if (today > endDateGC)   return 'past';
+  if (today > endDateGC)    return 'past';
   if (today >= startDateGC) return 'live';
   return 'upcoming';
 }
@@ -265,16 +316,13 @@ function adaptNews(row: AnyRow): NewsItem {
     id:            row.id,
     slug:          row.slug,
     titleI18n:     toI18n(row.title_i18n),
-    // DB column is summary_i18n (not excerpt_i18n)
     excerptI18n:   toI18n(row.summary_i18n ?? row.excerpt_i18n),
     contentI18n:   toI18n(row.body_i18n),
     publishedAt:   row.published_at ?? row.created_at,
     publishedAtEC: row.published_at_ec ?? '',
     categoryI18n:  toI18n(row.category_i18n ?? { en: row.category ?? 'general' }),
-    // DB has no author_name column; fall back to a fixed label
     authorI18n:    { en: 'Tourism Week', am: 'ቱሪዝም ሳምንት', om: 'Torban Turizimii' },
     pinned:        row.pinned ?? false,
-    // DB column is cover_image_url (not image_url) for news
     image:         row.cover_image_url ?? row.image_url ?? undefined,
   };
 }
@@ -282,12 +330,10 @@ function adaptNews(row: AnyRow): NewsItem {
 function adaptGallery(row: AnyRow): GalleryItem {
   return {
     id:          row.id,
-    // DB has no title_i18n on gallery_items; use caption as title fallback
     titleI18n:   row.title_i18n ? toI18n(row.title_i18n) : toI18n(row.caption_i18n ?? { en: 'Gallery item' }),
     captionI18n: row.caption_i18n ? toI18n(row.caption_i18n) : undefined,
     year:        row.year ?? new Date().getFullYear(),
     category:    row.category ?? 'highlights',
-    // DB media_type values are 'photo' | 'video'; map 'photo' → 'image'
     mediaType:   row.media_type === 'photo' ? 'image' : (row.media_type ?? 'image'),
     url:         row.image_url ?? row.video_url ?? '',
     thumbnail:   row.image_url ?? '',
@@ -302,7 +348,6 @@ function adaptSponsor(row: AnyRow): Sponsor {
     name:            row.name ?? '',
     tier:            (tierMap[row.tier] ?? row.tier) as Sponsor['tier'],
     logoPlaceholder: row.logo_url ?? '[SPONSOR LOGO]',
-    // DB has no description_i18n on sponsors
     sectorI18n:      { en: '', am: '', om: '' },
     website:         row.website_url ?? undefined,
   };
@@ -311,14 +356,11 @@ function adaptSponsor(row: AnyRow): Sponsor {
 function adaptCommittee(row: AnyRow): CommitteeMember {
   return {
     id:               row.id,
-    // DB column is full_name (plain text), not name_i18n
     nameI18n:         { en: row.full_name ?? '', am: row.full_name ?? '', om: row.full_name ?? '' },
     roleI18n:         toI18n(row.role_i18n),
-    // DB has no department_i18n column
     departmentI18n:   { en: '', am: '', om: '' },
     photoPlaceholder: row.photo_url ?? '[PHOTO]',
     photo_url:        (row.photo_url as string | null) ?? null,
-    // DB has no bio_i18n column
     bioI18n:          undefined,
   };
 }
@@ -381,10 +423,10 @@ function adaptSection(row: AnyRow): SectionSnapshot {
 function adaptSiteSettings(row: AnyRow | null): SiteSettingsSnapshot | null {
   if (!row) return null;
   return {
-    contactEmail:  row.contact_email  ?? null,
-    phone:         row.phone          ?? null,
-    addressI18n:   row.address_i18n   ?? null,
-    social:        row.social         ?? null,
+    contactEmail:   row.contact_email   ?? null,
+    phone:          row.phone           ?? null,
+    addressI18n:    row.address_i18n    ?? null,
+    social:         row.social          ?? null,
     footerTextI18n: row.footer_text_i18n ?? null,
   };
 }
@@ -431,19 +473,22 @@ function adaptRpcPayload(raw: AnyRow): Snapshot {
   };
 }
 
-// ─── Fetch ────────────────────────────────────────────────────────────────────
-
-// ─── Debug info ──────────────────────────────────────────────────────────────
+// ─── Debug info ───────────────────────────────────────────────────────────────
 
 export interface LiveDebugInfo {
-  source:       'supabase-rpc' | 'supabase-rest' | 'localstorage' | 'snapshot' | 'seed' | 'unknown';
-  lastFetchAt:  number | null;
-  httpStatus:   number | null;
-  errorText:    string | null;
-  editionId:    string | null;
-  eventCount:   number | null;
-  hint:         string | null;
-  breakerOpen:  boolean;
+  source:        'supabase-rpc' | 'supabase-rest' | 'localstorage' | 'snapshot' | 'seed' | 'unknown';
+  lastFetchAt:   number | null;
+  lastAttemptAt: number | null;
+  httpStatus:    number | null;
+  errorText:     string | null;
+  editionId:     string | null;
+  eventCount:    number | null;
+  hint:          string | null;
+  breakerOpen:   boolean;
+  breakerUntil:  number | null;
+  failCount:     number;
+  requestUrl:    string | null;
+  durationMs:    number | null;
 }
 
 const DEBUG_KEY = 'tw_live_debug';
@@ -451,18 +496,118 @@ const DEBUG_KEY = 'tw_live_debug';
 export function getDebugInfo(): LiveDebugInfo {
   try {
     const raw = localStorage.getItem(DEBUG_KEY);
-    if (!raw) return { source: 'unknown', lastFetchAt: null, httpStatus: null, errorText: null, editionId: null, eventCount: null, hint: null, breakerOpen: isBreakerOpen() };
-    return { ...JSON.parse(raw), breakerOpen: isBreakerOpen() } as LiveDebugInfo;
+    const base: LiveDebugInfo = {
+      source: 'unknown', lastFetchAt: null, lastAttemptAt: null,
+      httpStatus: null, errorText: null, editionId: null, eventCount: null,
+      hint: null, breakerOpen: isBreakerOpen(), breakerUntil: breakerOpenUntil(),
+      failCount, requestUrl: RPC_URL || null, durationMs: null,
+    };
+    if (!raw) return base;
+    return { ...base, ...JSON.parse(raw), breakerOpen: isBreakerOpen(), breakerUntil: breakerOpenUntil(), failCount };
   } catch {
-    return { source: 'unknown', lastFetchAt: null, httpStatus: null, errorText: null, editionId: null, eventCount: null, hint: null, breakerOpen: isBreakerOpen() };
+    return {
+      source: 'unknown', lastFetchAt: null, lastAttemptAt: null,
+      httpStatus: null, errorText: null, editionId: null, eventCount: null,
+      hint: null, breakerOpen: isBreakerOpen(), breakerUntil: breakerOpenUntil(),
+      failCount, requestUrl: RPC_URL || null, durationMs: null,
+    };
   }
 }
 
 function persistDebug(info: Partial<LiveDebugInfo>): void {
   try {
     const existing = getDebugInfo();
-    localStorage.setItem(DEBUG_KEY, JSON.stringify({ ...existing, ...info, breakerOpen: isBreakerOpen() }));
+    localStorage.setItem(DEBUG_KEY, JSON.stringify({
+      ...existing,
+      ...info,
+      breakerOpen: isBreakerOpen(),
+      breakerUntil: breakerOpenUntil(),
+      failCount,
+    }));
   } catch { /* quota */ }
+}
+
+// ─── Low-level single attempt ─────────────────────────────────────────────────
+
+const FETCH_TIMEOUT_MS = 8_000; // 8-second timeout per attempt
+
+/** Make one POST to the RPC endpoint. Returns null + records failure on any error. */
+async function attemptRpcFetch(): Promise<Snapshot | null> {
+  if (!RPC_URL || !ANON_KEY) return null;
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  const t0 = Date.now();
+
+  try {
+    pageLoadAttempted = true; // mark that we've attempted this page load
+    const res = await fetch(RPC_URL, {
+      method:  'POST',
+      headers: {
+        apikey:         ANON_KEY,
+        Authorization:  `Bearer ${ANON_KEY}`,
+        'Content-Type': 'application/json',
+        Accept:         'application/json',
+      },
+      body:   '{}',
+      signal: controller.signal,
+      cache:  'no-store',
+    });
+
+    const durationMs = Date.now() - t0;
+
+    if (!res.ok) {
+      let errorText = `HTTP ${res.status}`;
+      let hint: string | null = null;
+      try {
+        const j = await res.json() as AnyRow;
+        errorText = (j.message ?? j.error ?? errorText) as string;
+      } catch { /* ignore */ }
+
+      if (res.status === 404 || res.status === 400) {
+        hint = 'get_public_content not found — apply migration 014 to your Supabase project.';
+        // Trip the breaker for 404 so the REST fallback is chosen on future polls,
+        // but mark as 404 specifically so fetchLiveContent can route to REST.
+        recordFailure(res.status, errorText);
+        persistDebug({ source: 'supabase-rest', httpStatus: res.status, errorText, hint, lastAttemptAt: Date.now(), durationMs, requestUrl: RPC_URL });
+        return null; // caller will route to REST
+      }
+
+      recordFailure(res.status, errorText);
+      persistDebug({ httpStatus: res.status, errorText, hint: null, lastAttemptAt: Date.now(), durationMs, requestUrl: RPC_URL });
+      return null;
+    }
+
+    const raw = await res.json() as AnyRow;
+    const adapted = adaptRpcPayload(raw);
+    recordSuccess();
+    persistCache(adapted);
+    persistDebug({
+      source: 'supabase-rpc',
+      lastFetchAt: Date.now(),
+      lastAttemptAt: Date.now(),
+      httpStatus: 200,
+      errorText: null,
+      editionId: adapted.edition?.id ?? null,
+      eventCount: adapted.events.length,
+      hint: null,
+      durationMs,
+      requestUrl: RPC_URL,
+    });
+    return adapted;
+  } catch (err) {
+    const durationMs = Date.now() - t0;
+    const msg = err instanceof Error ? err.message : String(err);
+    recordFailure(null, msg);
+    persistDebug({
+      httpStatus: null, errorText: msg,
+      hint: 'Network error or Supabase project paused.',
+      lastAttemptAt: Date.now(), durationMs, requestUrl: RPC_URL,
+    });
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 // ─── Fallback: plain REST reads ───────────────────────────────────────────────
@@ -473,14 +618,14 @@ async function fetchLiveContentViaREST(): Promise<Snapshot | null> {
   if (!SUPABASE_URL || !ANON_KEY) return null;
   const base = SUPABASE_URL.replace(/\/$/, '') + '/rest/v1';
   const headers: Record<string, string> = {
-    apikey: ANON_KEY,
+    apikey:        ANON_KEY,
     Authorization: `Bearer ${ANON_KEY}`,
-    Accept: 'application/json',
+    Accept:        'application/json',
   };
 
   const get = async (table: string, params: string): Promise<AnyRow[]> => {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 4000);
+    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
     try {
       const res = await fetch(`${base}/${table}?${params}`, {
         headers,
@@ -492,23 +637,22 @@ async function fetchLiveContentViaREST(): Promise<Snapshot | null> {
     } catch { return []; } finally { clearTimeout(timer); }
   };
 
-  // Fetch current edition
   const editions = await get('edition_public', 'is_current=eq.true&limit=1');
   if (!editions.length) return null;
-  const editionRow = editions[0];
-  const editionId = editionRow.id as string;
+  const editionRow  = editions[0];
+  const editionId   = editionRow.id as string;
   const startDateGC = (editionRow.start_date as string) ?? '2025-04-07';
 
   const [eventRows, newsRows, galleryRows, sponsorRows, committeeRows, faqRows, settingsRows, annRows, pastEditionRows] = await Promise.all([
-    get('events', `edition_id=eq.${editionId}&state=eq.published&order=day.asc,session.asc,sort_order.asc`),
-    get('news', 'state=eq.published&order=pinned.desc,published_at.desc&limit=50'),
-    get('gallery_items', 'state=eq.published&order=sort_order.asc&limit=200'),
-    get('sponsors', 'state=eq.published&order=sort_order.asc'),
+    get('events',          `edition_id=eq.${editionId}&state=eq.published&order=day.asc,session.asc,sort_order.asc`),
+    get('news',            'state=eq.published&order=pinned.desc,published_at.desc&limit=50'),
+    get('gallery_items',   'state=eq.published&order=sort_order.asc&limit=200'),
+    get('sponsors',        'state=eq.published&order=sort_order.asc'),
     get('committee_members', 'state=eq.published&order=sort_order.asc'),
-    get('faqs', 'state=eq.published&order=sort_order.asc'),
-    get('site_settings', 'limit=1'),
-    get('announcements', 'state=eq.published&order=created_at.desc'),
-    get('edition_public', 'state=eq.published&status=eq.past&order=number.desc&limit=20'),
+    get('faqs',            'state=eq.published&order=sort_order.asc'),
+    get('site_settings',   'limit=1'),
+    get('announcements',   'state=eq.published&order=created_at.desc'),
+    get('edition_public',  'state=eq.published&status=eq.past&order=number.desc&limit=20'),
   ]);
 
   const snap: Snapshot = {
@@ -528,115 +672,120 @@ async function fetchLiveContentViaREST(): Promise<Snapshot | null> {
     editionDays:  [],
   };
 
+  recordSuccess();
   persistCache(snap);
   persistDebug({
     source: 'supabase-rest',
     lastFetchAt: Date.now(),
+    lastAttemptAt: Date.now(),
     httpStatus: 200,
     errorText: null,
     editionId: snap.edition?.id ?? null,
     eventCount: snap.events.length,
-    hint: 'get_public_content not found: apply migration 014 for faster loads.',
+    hint: 'get_public_content not found — apply migration 014 for faster loads.',
   });
   return snap;
 }
 
+/** Pause for ms milliseconds. */
+function sleep(ms: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
 /**
- * Fetch the full public content payload from get_public_content() RPC.
- * Falls back to plain REST table reads if the RPC returns 404 (migration 014
- * not yet applied).  On genuine network failure the circuit breaker trips.
+ * Fetch the full public content payload with retry + backoff.
  *
- * Returns the adapted Snapshot on success, null on any failure.
+ * Attempts the RPC endpoint up to 4 times total (original + 3 retries) with
+ * delays of 2 s, 5 s, 15 s between attempts.  The circuit breaker opens only
+ * after MAX_FAILURES consecutive failures and stays open for 60 seconds.
+ *
+ * The first attempt of every new page load bypasses a previously-open breaker
+ * (pageLoadAttempted flag resets on module init) so a fresh page load is never
+ * blocked by a stale failure from the previous session.
+ *
+ * Returns the adapted Snapshot on success, null on all failures.
  */
 export async function fetchLiveContent(): Promise<Snapshot | null> {
-  if (!LIVE_ENABLED)        return null;
+  if (!LIVE_ENABLED)         return null;
   if (!RPC_URL || !ANON_KEY) {
-    persistDebug({ errorText: 'VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY not set', hint: 'Set both env vars in .env and in your hosting environment.' });
+    persistDebug({
+      errorText: 'VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY not set at build time.',
+      hint: 'Set both env vars in Vercel project settings → Environment Variables.',
+    });
     return null;
   }
+
+  // If the breaker is open (and this is not the page-load bypass), skip entirely.
   if (isBreakerOpen()) {
     const entry = getBreakerEntry();
-    // If the breaker tripped because the RPC was missing (404), still try REST fallback
-    if (entry?.httpStatus === 404) {
+    // 404 means RPC not found — route to REST fallback instead of null.
+    if (entry?.httpStatus === 404 || entry?.httpStatus === 400) {
       return fetchLiveContentViaREST();
     }
     return null;
   }
 
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 3000); // 3-second timeout
-
-  try {
-    const res = await fetch(RPC_URL, {
-      method: 'POST',
-      headers: {
-        apikey:          ANON_KEY,
-        Authorization:   `Bearer ${ANON_KEY}`,
-        'Content-Type':  'application/json',
-        'Accept':        'application/json',
-      },
-      body: '{}',
-      signal: controller.signal,
-      // Never serve a stale RPC response from the browser's HTTP cache.
-      cache: 'no-store',
-    });
-
-    if (!res.ok) {
-      let errorText = `HTTP ${res.status}`;
-      let hint: string | null = null;
-      try { const j = await res.json() as AnyRow; errorText = (j.message ?? j.error ?? errorText) as string; } catch { /* ignore */ }
-
-      if (res.status === 404 || res.status === 400) {
-        // RPC not found — migration 014 not applied; do NOT trip the breaker for general requests
-        hint = 'get_public_content not found: apply migration 014 to your Supabase project.';
-        tripBreaker(res.status, errorText);
-        persistDebug({ source: 'supabase-rest', httpStatus: res.status, errorText, hint, lastFetchAt: Date.now() });
-        // Try REST fallback immediately
-        return fetchLiveContentViaREST();
-      }
-      // 5xx or other — trip the breaker
-      tripBreaker(res.status, errorText);
-      persistDebug({ httpStatus: res.status, errorText, hint: null, lastFetchAt: Date.now() });
-      return null;
+  // Attempt 1 (immediate) + retries with backoff
+  const totalAttempts = RETRY_DELAYS_MS.length + 1;
+  for (let attempt = 0; attempt < totalAttempts; attempt++) {
+    if (attempt > 0) {
+      await sleep(RETRY_DELAYS_MS[attempt - 1]);
+      // If the breaker opened during a sleep (unlikely but possible), stop.
+      if (isBreakerOpen()) return null;
     }
 
-    const raw = await res.json() as AnyRow;
-    const adapted = adaptRpcPayload(raw);
-    persistCache(adapted);
-    persistDebug({
-      source: 'supabase-rpc',
-      lastFetchAt: Date.now(),
-      httpStatus: 200,
-      errorText: null,
-      editionId: adapted.edition?.id ?? null,
-      eventCount: adapted.events.length,
-      hint: null,
-    });
-    return adapted;
-  } catch (err) {
-    // Network error, timeout, or JSON parse failure
-    const msg = err instanceof Error ? err.message : String(err);
-    tripBreaker(null, msg);
-    persistDebug({ httpStatus: null, errorText: msg, hint: 'Network error or Supabase project paused.', lastFetchAt: Date.now() });
-    return null;
-  } finally {
-    clearTimeout(timer);
+    const result = await attemptRpcFetch();
+
+    if (result !== null) return result;
+
+    // 404 → route to REST fallback immediately (don't retry the RPC)
+    const dbg = getDebugInfo();
+    if (dbg.httpStatus === 404 || dbg.httpStatus === 400) {
+      return fetchLiveContentViaREST();
+    }
+
+    // Breaker just opened after MAX_FAILURES — stop retrying
+    if (isBreakerOpen()) return null;
   }
+
+  return null;
 }
 
 /**
  * Determine whether the live layer should actively poll.
- * Returns true when the edition is live or starts within 14 days.
+ * Returns true when the edition is live or starts within 3 days (urgent window)
+ * or within 14 days (normal lookahead).
  */
 export function shouldPollLive(startDateGC: string, endDateGC: string): boolean {
-  const addisNow  = new Date(Date.now() + 3 * 60 * 60 * 1000);
-  const today     = addisNow.toISOString().split('T')[0];
+  const addisNow = new Date(Date.now() + 3 * 60 * 60 * 1000);
+  const today    = addisNow.toISOString().split('T')[0];
 
-  if (today >= startDateGC && today <= endDateGC) return true;  // live now
+  if (today >= startDateGC && today <= endDateGC) return true; // live now
+
   if (today < startDateGC) {
     const diffMs   = new Date(startDateGC + 'T00:00:00Z').getTime() - Date.now();
     const diffDays = diffMs / (24 * 60 * 60 * 1000);
-    return diffDays <= 14;                                       // starts within 14 days
+    return diffDays <= 14; // starts within 14 days
   }
-  return false;                                                   // past edition
+
+  return false; // past edition
+}
+
+/**
+ * Returns true when the edition starts within 3 days (or is live).
+ * Used by useLiveContent to pick the 30-second poll interval.
+ */
+export function isEditionImminent(startDateGC: string, endDateGC: string): boolean {
+  const addisNow = new Date(Date.now() + 3 * 60 * 60 * 1000);
+  const today    = addisNow.toISOString().split('T')[0];
+
+  if (today >= startDateGC && today <= endDateGC) return true; // live
+
+  if (today < startDateGC) {
+    const diffMs   = new Date(startDateGC + 'T00:00:00Z').getTime() - Date.now();
+    const diffDays = diffMs / (24 * 60 * 60 * 1000);
+    return diffDays <= 3;
+  }
+
+  return false;
 }

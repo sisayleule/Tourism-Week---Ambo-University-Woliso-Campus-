@@ -384,6 +384,53 @@ export const Home: React.FC = () => {
   const marqueeGallery  = [...galleryItems, ...galleryItems];
   const editionStats    = edition?.stats;
 
+  /**
+   * Pick a curated event-card image when the event has no uploaded image.
+   *
+   * Priority order:
+   *   1. The event's own image_url from the DB (evt.image)
+   *   2. Title-keyword match  — most specific, picks the right scene
+   *   3. Category fallback     — picks by event category, cycling by card index
+   *   4. Last-resort generic   — the original placeholder
+   */
+  const CULTURAL_IMAGES = [
+    '/assets/aistudio/image_c9b19ed8.png',  // multi-ethnic cultural attire assembly
+    '/assets/aistudio/image_e2e72d06.png',  // exhibition pavilion & cultural hostesses
+    '/assets/aistudio/image_6eb824fd.png',  // heritage costume poses
+    '/assets/aistudio/image_dd2f8daf.png',  // shamma & tibeb white robe delegation
+    '/assets/aistudio/image_c7963080.png',  // national unity cultural representatives
+    '/assets/aistudio/image_d5bf61c0.png',  // traditional stick dance & peace procession
+  ];
+  const CARNIVAL_IMAGES = [
+    '/assets/aistudio/image_e6296589.png',  // celebration street carnival & youth dance
+    '/assets/aistudio/image_c9b19ed8.png',  // multi-ethnic procession
+    '/assets/aistudio/image_c7963080.png',  // group cultural scene
+  ];
+  const SPORTS_IMAGES = [
+    '/assets/aistudio/image_3856f7f5.png',  // morning carnival march & athletic peloton
+    '/assets/aistudio/image_db590259.png',
+    '/assets/aistudio/image_fe8a90e0.png',
+  ];
+
+  function getEventCardImage(evt: EventItem, idx: number): string {
+    if (evt.image) return evt.image;
+    const title = (evt.titleI18n?.en ?? '').toLowerCase();
+    // Title keyword matching — most specific
+    if (title.includes('carnival') || title.includes('cultural show') || title.includes('culture & art') || title.includes('cultural & art'))
+      return CARNIVAL_IMAGES[idx % CARNIVAL_IMAGES.length];
+    if (title.includes('handcraft') || title.includes('exhibition') || title.includes('craft'))
+      return '/assets/aistudio/image_e2e72d06.png'; // exhibition pavilion scene
+    if (title.includes('music') || title.includes('dance') || title.includes('festival'))
+      return CULTURAL_IMAGES[idx % CULTURAL_IMAGES.length];
+    // Category fallback
+    if (evt.category === 'culture')
+      return CULTURAL_IMAGES[idx % CULTURAL_IMAGES.length];
+    if (evt.category === 'sports')
+      return SPORTS_IMAGES[idx % SPORTS_IMAGES.length];
+    // Generic last resort
+    return CULTURAL_IMAGES[idx % CULTURAL_IMAGES.length];
+  }
+
   const [themeBefore, themeGold, themeAfter] = typingDone
     ? splitTheme(typedTheme, highlightWord)
     : [typedTheme, '', ''];
@@ -940,7 +987,7 @@ export const Home: React.FC = () => {
               >
                 {/* Image frame — same fit as Festival Highlights cards */}
                 <div className="relative w-full overflow-hidden bg-stone-100 dark:bg-stone-900" style={{ aspectRatio: '4/3' }}>
-                  {(() => { const ri = resolveImage(evt.image || '/assets/aistudio/image_b3b470e9.png'); return (
+                  {(() => { const ri = resolveImage(getEventCardImage(evt, idx % (featuredEvents.length || 1))); return (
                   <img
                     src={ri.src}
                     srcSet={ri.srcSet || undefined}

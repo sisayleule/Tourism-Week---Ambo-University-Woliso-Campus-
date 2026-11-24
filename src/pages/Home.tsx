@@ -1416,8 +1416,8 @@ export const Home: React.FC = () => {
                 {marqueeGallery.map((item, idx) => (
                   <div
                     key={`${item.id}-${idx}`}
-                    className="lift shrink-0 w-[72vw] sm:w-[280px] lg:w-[320px] rounded-2xl overflow-hidden relative group cursor-pointer bg-stone-100 dark:bg-stone-900"
-                    style={{ aspectRatio: '4/3' }}
+                    className="lift shrink-0 w-[82vw] sm:w-[340px] lg:w-[380px] rounded-2xl overflow-hidden relative group cursor-pointer bg-stone-100 dark:bg-stone-900 flex items-center justify-center"
+                    style={{ height: '340px' }}
                     onClick={() => setActiveGalleryModal(item)}
                     role="button"
                     tabIndex={idx < galleryItems.length ? 0 : -1}
@@ -1431,16 +1431,16 @@ export const Home: React.FC = () => {
                         <img
                           src={ri.src}
                           srcSet={ri.srcSet || undefined}
-                          sizes={ri.srcSet ? '(min-width: 1024px) 320px, (min-width: 640px) 280px, 72vw' : undefined}
+                          sizes={ri.srcSet ? '(min-width: 1024px) 380px, (min-width: 640px) 340px, 82vw' : undefined}
                           alt={item.titleI18n[currentLang] ?? item.titleI18n.en}
                           loading="lazy"
                           decoding="async"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                         />
                       );
                     })()}
                     {/* Caption overlay on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#071510]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#071510]/80 via-[#071510]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
                       <span className="small-caps-date text-stone-300 text-[10px]">{item.category} · {item.year}</span>
                       <p className="text-xs font-semibold text-white mt-0.5 line-clamp-2">
                         {item.titleI18n[currentLang] ?? item.titleI18n.en}

@@ -290,7 +290,7 @@ export const Home: React.FC = () => {
   /* ─── gallery auto-scroll ────────────────────────────────────────── */
   useEffect(() => {
     const el = galleryRef.current;
-    if (!el || !galleryItems.length) return;
+    if (!el || !galleryItems.length || galleryItems.length <= 10) return;
     let id: number;
     let last = performance.now();
     const speed = 26;
@@ -1402,59 +1402,106 @@ export const Home: React.FC = () => {
             </div>
           </div>
 
-          {/* Scrollable carousel strip — fixed-height tiles, infinite loop */}
-          {galleryItems.length > 0 && (
-            <div className="relative fade-rise delay-100">
-              <div
-                ref={galleryRef}
-                onMouseEnter={() => setGalleryPaused(true)}
-                onMouseLeave={() => setGalleryPaused(false)}
-                onTouchStart={() => setGalleryPaused(true)}
-                onTouchEnd={() => setGalleryPaused(false)}
-                className="flex gap-4 overflow-x-auto no-scrollbar edge-fade pb-4 pt-2 pl-4 sm:pl-6 lg:pl-8 pr-4 sm:pr-6 lg:pr-8 cursor-grab active:cursor-grabbing select-none"
-              >
-                {marqueeGallery.map((item, idx) => (
-                  <div
-                    key={`${item.id}-${idx}`}
-                    className="lift shrink-0 w-[82vw] sm:w-[340px] lg:w-[380px] rounded-2xl overflow-hidden relative group cursor-pointer bg-stone-100 dark:bg-stone-900 flex items-center justify-center"
-                    style={{ height: '340px' }}
-                    onClick={() => setActiveGalleryModal(item)}
-                    role="button"
-                    tabIndex={idx < galleryItems.length ? 0 : -1}
-                    onKeyDown={(e) => e.key === 'Enter' && idx < galleryItems.length && setActiveGalleryModal(item)}
-                    aria-label={idx < galleryItems.length ? `View photo: ${item.titleI18n[currentLang] ?? item.titleI18n.en}` : undefined}
-                    aria-hidden={idx >= galleryItems.length}
-                  >
-                    {(() => {
-                      const ri = resolveImage((item as GalleryItem & { thumbUrl?: string }).thumbUrl ?? item.thumbnail ?? item.url);
-                      return (
-                        <img
-                          src={ri.src}
-                          srcSet={ri.srcSet || undefined}
-                          sizes={ri.srcSet ? '(min-width: 1024px) 380px, (min-width: 640px) 340px, 82vw' : undefined}
-                          alt={item.titleI18n[currentLang] ?? item.titleI18n.en}
-                          loading="lazy"
-                          decoding="async"
-                          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
-                        />
-                      );
-                    })()}
-                    {/* Caption overlay on hover */}
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#071510]/80 via-[#071510]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
-                      <span className="small-caps-date text-stone-300 text-[10px]">{item.category} · {item.year}</span>
-                      <p className="text-xs font-semibold text-white mt-0.5 line-clamp-2">
-                        {item.titleI18n[currentLang] ?? item.titleI18n.en}
-                      </p>
+          {/* ── First 10 images: masonry grid ───────────────────────────── */}
+          {galleryItems.length > 0 && (() => {
+            const gridItems  = galleryItems.slice(0, 10);
+            const extraItems = galleryItems.slice(10);
+            const extraMarquee = [...extraItems, ...extraItems];
+
+            return (
+              <>
+                <div className="masonry fade-rise delay-100">
+                  {gridItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="masonry-item lift group relative rounded-2xl overflow-hidden cursor-pointer bg-stone-100 dark:bg-stone-900"
+                      onClick={() => setActiveGalleryModal(item)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => e.key === 'Enter' && setActiveGalleryModal(item)}
+                      aria-label={`View photo: ${item.titleI18n[currentLang] ?? item.titleI18n.en}`}
+                    >
+                      {(() => {
+                        const ri = resolveImage((item as GalleryItem & { thumbUrl?: string }).thumbUrl ?? item.thumbnail ?? item.url);
+                        return (
+                          <img
+                            src={ri.src}
+                            srcSet={ri.srcSet || undefined}
+                            sizes={ri.srcSet ? '(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw' : undefined}
+                            alt={item.titleI18n[currentLang] ?? item.titleI18n.en}
+                            loading="lazy"
+                            decoding="async"
+                            className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        );
+                      })()}
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#071510]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                        <span className="small-caps-date text-stone-300">{item.category} · {item.year}</span>
+                        <p className="text-xs font-semibold text-white mt-1 line-clamp-2">
+                          {item.titleI18n[currentLang] ?? item.titleI18n.en}
+                        </p>
+                      </div>
+                      <span className="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-sm text-white border border-white/10">
+                        {item.year}
+                      </span>
                     </div>
-                    {/* Year badge */}
-                    <span className="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-sm text-white border border-white/10">
-                      {item.year}
-                    </span>
+                  ))}
+                </div>
+
+                {/* ── Images 11+: fixed-height horizontal carousel ─────────── */}
+                {extraItems.length > 0 && (
+                  <div className="relative fade-rise delay-200">
+                    <div
+                      ref={galleryRef}
+                      onMouseEnter={() => setGalleryPaused(true)}
+                      onMouseLeave={() => setGalleryPaused(false)}
+                      onTouchStart={() => setGalleryPaused(true)}
+                      onTouchEnd={() => setGalleryPaused(false)}
+                      className="flex gap-4 overflow-x-auto no-scrollbar edge-fade pb-4 pt-2 pl-4 sm:pl-6 lg:pl-8 pr-4 sm:pr-6 lg:pr-8 cursor-grab active:cursor-grabbing select-none"
+                    >
+                      {extraMarquee.map((item, idx) => (
+                        <div
+                          key={`${item.id}-extra-${idx}`}
+                          className="lift shrink-0 w-[82vw] sm:w-[340px] lg:w-[380px] rounded-2xl overflow-hidden relative group cursor-pointer bg-stone-100 dark:bg-stone-900 flex items-center justify-center"
+                          style={{ height: '340px' }}
+                          onClick={() => setActiveGalleryModal(item)}
+                          role="button"
+                          tabIndex={idx < extraItems.length ? 0 : -1}
+                          onKeyDown={(e) => e.key === 'Enter' && idx < extraItems.length && setActiveGalleryModal(item)}
+                          aria-label={idx < extraItems.length ? `View photo: ${item.titleI18n[currentLang] ?? item.titleI18n.en}` : undefined}
+                          aria-hidden={idx >= extraItems.length}
+                        >
+                          {(() => {
+                            const ri = resolveImage((item as GalleryItem & { thumbUrl?: string }).thumbUrl ?? item.thumbnail ?? item.url);
+                            return (
+                              <img
+                                src={ri.src}
+                                srcSet={ri.srcSet || undefined}
+                                sizes={ri.srcSet ? '(min-width: 1024px) 380px, (min-width: 640px) 340px, 82vw' : undefined}
+                                alt={item.titleI18n[currentLang] ?? item.titleI18n.en}
+                                loading="lazy"
+                                decoding="async"
+                                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                              />
+                            );
+                          })()}
+                          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#071510]/80 via-[#071510]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
+                            <span className="small-caps-date text-stone-300 text-[10px]">{item.category} · {item.year}</span>
+                            <p className="text-xs font-semibold text-white mt-0.5 line-clamp-2">
+                              {item.titleI18n[currentLang] ?? item.titleI18n.en}
+                            </p>
+                          </div>
+                          <span className="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-sm text-white border border-white/10">
+                            {item.year}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
+                )}
+              </>
+            );
+          })()}
 
         </div>
       </section>

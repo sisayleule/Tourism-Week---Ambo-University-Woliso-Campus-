@@ -8,7 +8,7 @@ import { Language } from '../../types';
 
 /* ─── Logo paths ────────────────────────────────────────────────────── */
 export const LOGO_FULL  = '/assets/tourism-week-logo.png';
-export const CREST_AMBOU = '/assets/aistudio/image_230557a2.png';
+export const CREST_AMBOU = '/assets/University-logo.png';
 
 /* ─── Nav definitions ───────────────────────────────────────────────── */
 const PRIMARY_NAV = [

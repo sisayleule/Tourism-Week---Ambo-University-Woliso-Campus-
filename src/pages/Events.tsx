@@ -393,11 +393,12 @@ export const Events: React.FC = () => {
             >
               {/* Image — same fit as Festival Highlights cards */}
               {(() => {
-                // These events have portrait/tall photos — contain them so nothing is cropped.
+                // These events need contain so the full image shows without cropping.
                 // Match on slug suffix so it works regardless of edition-prefix.
                 const useContain =
                   evt.slug.includes('miss-mr-tourism') ||
-                  evt.slug.includes('miss-and-mr-tourism');
+                  evt.slug.includes('miss-and-mr-tourism') ||
+                  evt.slug.includes('guest-tour');
                 const ri = resolveImage(evt.image || '/assets/aistudio/image_b3b470e9.png');
                 return (
                   <div
@@ -412,7 +413,8 @@ export const Events: React.FC = () => {
                       loading="lazy"
                       decoding="async"
                       width={800} height={450}
-                      className={`w-full h-full ${useContain ? 'object-contain' : 'object-cover group-hover:scale-105 transition-transform duration-500'}`}
+                      className={`w-full h-full${useContain ? '' : ' group-hover:scale-105 transition-transform duration-500'}`}
+                      style={{ objectFit: useContain ? 'contain' : 'cover' }}
                       onError={(e) => {
                         const img = e.currentTarget;
                         const fb = '/assets/optimized/image_b3b470e9-960.webp';

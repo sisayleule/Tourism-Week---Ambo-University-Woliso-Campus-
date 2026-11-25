@@ -405,16 +405,19 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({ event, currentLang, onAddTo
 
       {/* Optional event image */}
       {event.image && (() => {
+        // These events need contain so the full image shows without cropping.
         // Match on slug suffix so it works regardless of edition-prefix.
         const useContain =
           event.slug.includes('miss-mr-tourism') ||
-          event.slug.includes('miss-and-mr-tourism');
+          event.slug.includes('miss-and-mr-tourism') ||
+          event.slug.includes('guest-tour');
         return (
           <div className={`shrink-0 w-full md:w-40 h-28 rounded-xl overflow-hidden ${useContain ? 'bg-stone-200 dark:bg-stone-800' : 'bg-stone-100 dark:bg-stone-900'}`}>
             <img
               src={event.image}
               alt={event.titleI18n.en}
-              className={`w-full h-full ${useContain ? 'object-contain' : 'object-cover'}`}
+              className="w-full h-full"
+              style={{ objectFit: useContain ? 'contain' : 'cover' }}
               onError={(e) => {
                 const img = e.currentTarget;
                 if (img.src !== window.location.origin + '/assets/aistudio/image_b3b470e9.png') {

@@ -642,7 +642,7 @@ export const Home: React.FC = () => {
             {/* Headline — fluid size: ~30px on 360, ~46px on 768, ~62px on 1440 */}
             <h1
               className="font-editorial font-extrabold text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.8)] min-h-[1.2em] fade-rise delay-200 leading-[1.1] tracking-tight text-balance"
-              style={{ fontSize: 'clamp(1.85rem, 4.5vw + 0.4rem, 3.75rem)' }}
+              style={{ fontSize: 'clamp(0.925rem, 2.25vw + 0.2rem, 1.875rem)' }}
             >
               {typingDone ? (
                 <>

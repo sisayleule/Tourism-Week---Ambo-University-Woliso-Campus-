@@ -596,16 +596,53 @@ export const Home: React.FC = () => {
             style={{ gap: 'clamp(8px, 1.4vh, 16px)' }}
           >
 
-            {/* Overline */}
-            <p className="text-[#D9A441] tracking-[0.18em] fade-rise delay-100 uppercase font-bold drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
-              style={{ fontSize: 'clamp(0.75rem, 1.2vw, 0.9rem)' }}>
-              {edition?.editionNameI18n[currentLang] ?? edition?.editionNameI18n.en}
-            </p>
+            {/* Overline badge — "Tourism Week Round 7th" */}
+            <div className="fade-rise delay-100 inline-flex items-center justify-center">
+              <span
+                className="inline-flex items-center gap-2 px-5 py-2 rounded-full font-extrabold uppercase tracking-[0.2em] font-editorial"
+                style={{
+                  fontSize: 'clamp(0.8rem, 1.5vw + 0.2rem, 1.1rem)',
+                  background: 'linear-gradient(135deg, rgba(217,164,65,0.22) 0%, rgba(217,164,65,0.08) 100%)',
+                  border: '1.5px solid rgba(217,164,65,0.55)',
+                  color: '#F5C842',
+                  textShadow: '0 0 20px rgba(217,164,65,0.6), 0 2px 8px rgba(0,0,0,0.9)',
+                  boxShadow: '0 0 24px rgba(217,164,65,0.18), inset 0 1px 0 rgba(255,255,255,0.08)',
+                  backdropFilter: 'blur(8px)',
+                  letterSpacing: '0.2em',
+                }}
+              >
+                <span
+                  aria-hidden="true"
+                  style={{
+                    display: 'inline-block',
+                    width: 6,
+                    height: 6,
+                    borderRadius: '50%',
+                    background: '#D9A441',
+                    boxShadow: '0 0 8px #D9A441',
+                    flexShrink: 0,
+                  }}
+                />
+                {edition?.editionNameI18n[currentLang] ?? edition?.editionNameI18n.en}
+                <span
+                  aria-hidden="true"
+                  style={{
+                    display: 'inline-block',
+                    width: 6,
+                    height: 6,
+                    borderRadius: '50%',
+                    background: '#D9A441',
+                    boxShadow: '0 0 8px #D9A441',
+                    flexShrink: 0,
+                  }}
+                />
+              </span>
+            </div>
 
-            {/* Headline — fluid size: ~32px on 360, ~48px on 768, ~64px on 1440 */}
+            {/* Headline — fluid size: ~30px on 360, ~46px on 768, ~62px on 1440 */}
             <h1
               className="font-editorial font-extrabold text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.8)] min-h-[1.2em] fade-rise delay-200 leading-[1.1] tracking-tight text-balance"
-              style={{ fontSize: 'clamp(2rem, 5vw + 0.5rem, 4rem)' }}
+              style={{ fontSize: 'clamp(1.85rem, 4.5vw + 0.4rem, 3.75rem)' }}
             >
               {typingDone ? (
                 <>
@@ -626,8 +663,8 @@ export const Home: React.FC = () => {
 
             {/* Sub-theme — fluid */}
             <p
-              className="text-stone-200/90 leading-relaxed max-w-xl mx-auto font-medium fade-rise delay-300 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)] text-pretty"
-              style={{ fontSize: 'clamp(0.85rem, 1.5vw + 0.3rem, 1.1rem)' }}
+              className="text-stone-200/90 leading-relaxed max-w-xl mx-auto font-normal fade-rise delay-300 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)] text-pretty"
+              style={{ fontSize: 'clamp(0.78rem, 1.2vw + 0.2rem, 1rem)' }}
             >
               {edition?.subThemeI18n?.[currentLang] ?? edition?.subThemeI18n?.en ?? t('hero.tagline')}
             </p>

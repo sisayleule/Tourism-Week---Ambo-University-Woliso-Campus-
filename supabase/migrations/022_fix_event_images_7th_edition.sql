@@ -6,13 +6,13 @@
 --
 -- Mapping:
 --   Day 1 morning  — Green Tourism / Cleaning Campaign  → event-cleaning-campaign.jpg
---   Day 2 morning  — Carnival / Cultural Show           → event-great-run.jpg  (kept as cultural)
+--   Day 2 morning  — Carnival / Cultural Show           → Carnival (Cultural Show).jpg
 --   Day 3 morning  — Great Run                          → event-great-run.jpg
 --   Day 3 afternoon — Miss & Mr. Tourism Pageant        → event-miss-mr-tourism.jpg
 --   Day 4 morning  — Academic Seminar / Awards          → event-seminar-awards.png
 --   Day 4 afternoon — Football Match                    → event-football.jpg.png
 --   Day 5 morning  — Guest Tour / Eco-Tourism           → event-guest-tour.jpg
---   Day 6          — Closing Ceremony                   → event-miss-mr-tourism.jpg (stage/balloons)
+--   Day 6          — Closing Ceremony                   → End of the Programme — Closing Ceremony.png
 --
 -- Safe to re-run: WHERE slug = '...' is idempotent.
 -- =============================================================================
@@ -25,7 +25,7 @@ WHERE  slug = 'green-tourism-cleaning-campaign-within-campus-and-town';
 
 -- Day 2 — Carnival / Cultural Show / Handcrafts / Music / Dance
 UPDATE public.events
-SET    image_url  = '/assets/events/event-great-run.jpg',
+SET    image_url  = '/assets/events/Carnival (Cultural Show).jpg',
        updated_at = now()
 WHERE  slug = 'carnival-cultural-show-handcrafts-exhibition-music-festival-dance-contest';
 
@@ -61,6 +61,6 @@ WHERE  slug = '7-annual-tourism-week-guest-tour-woliso-destinations';
 
 -- Day 6 — End of the Programme / Closing Ceremony
 UPDATE public.events
-SET    image_url  = '/assets/events/event-miss-mr-tourism.jpg',
+SET    image_url  = '/assets/events/End of the Programme — Closing Ceremony.png',
        updated_at = now()
 WHERE  slug = 'end-of-the-programme-closing-ceremony';

@@ -404,21 +404,28 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({ event, currentLang, onAddTo
     <article className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#12221C] border border-stone-200 dark:border-stone-800 hover:border-stone-400 dark:hover:border-stone-700 transition-all flex flex-col md:flex-row md:items-start gap-6">
 
       {/* Optional event image */}
-      {event.image && (
-        <div className="shrink-0 w-full md:w-40 h-28 rounded-xl overflow-hidden bg-stone-100 dark:bg-stone-900">
-          <img
-            src={event.image}
-            alt={event.titleI18n.en}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              const img = e.currentTarget;
-              if (img.src !== window.location.origin + '/assets/aistudio/image_b3b470e9.png') {
-                img.src = '/assets/aistudio/image_b3b470e9.png';
-              }
-            }}
-          />
-        </div>
-      )}
+      {event.image && (() => {
+        const containSlugs = new Set([
+          '7-annual-tourism-week-miss-mr-tourism-pageant',
+          '7-annual-tourism-week-guest-tour-woliso-destinations',
+        ]);
+        const useContain = containSlugs.has(event.slug);
+        return (
+          <div className={`shrink-0 w-full md:w-40 h-28 rounded-xl overflow-hidden ${useContain ? 'bg-stone-200 dark:bg-stone-800' : 'bg-stone-100 dark:bg-stone-900'}`}>
+            <img
+              src={event.image}
+              alt={event.titleI18n.en}
+              className={`w-full h-full ${useContain ? 'object-contain' : 'object-cover'}`}
+              onError={(e) => {
+                const img = e.currentTarget;
+                if (img.src !== window.location.origin + '/assets/aistudio/image_b3b470e9.png') {
+                  img.src = '/assets/aistudio/image_b3b470e9.png';
+                }
+              }}
+            />
+          </div>
+        );
+      })()}
 
       <div className="flex-1 space-y-3 min-w-0 overflow-hidden">
         {/* Metadata line */}

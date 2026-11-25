@@ -392,24 +392,37 @@ export const Events: React.FC = () => {
               className="flex flex-col justify-between rounded-2xl bg-white dark:bg-[#12221C] border border-stone-200 dark:border-stone-800 hover:shadow-md transition-all group overflow-hidden"
             >
               {/* Image — same fit as Festival Highlights cards */}
-              <div className="w-full overflow-hidden bg-stone-100 dark:bg-stone-900" style={{ aspectRatio: '16/9' }}>
-                {(() => { const ri = resolveImage(evt.image || '/assets/aistudio/image_b3b470e9.png'); return (
-                <img
-                  src={ri.src}
-                  srcSet={ri.srcSet || undefined}
-                  sizes={ri.srcSet ? '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw' : undefined}
-                  alt={evt.titleI18n.en}
-                  loading="lazy"
-                  decoding="async"
-                  width={800} height={450}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  onError={(e) => {
-                    const img = e.currentTarget;
-                    const fb = '/assets/optimized/image_b3b470e9-960.webp';
-                    if (img.src !== window.location.origin + fb) { img.srcset = ''; img.src = fb; }
-                  }}
-                />); })()}
-              </div>
+              {(() => {
+                // These events have portrait/tall photos — contain them so nothing is cropped.
+                const containSlugs = new Set([
+                  '7-annual-tourism-week-miss-mr-tourism-pageant',
+                  '7-annual-tourism-week-guest-tour-woliso-destinations',
+                ]);
+                const useContain = containSlugs.has(evt.slug);
+                const ri = resolveImage(evt.image || '/assets/aistudio/image_b3b470e9.png');
+                return (
+                  <div
+                    className={`w-full overflow-hidden${useContain ? ' bg-stone-200 dark:bg-stone-800' : ' bg-stone-100 dark:bg-stone-900'}`}
+                    style={{ aspectRatio: '16/9' }}
+                  >
+                    <img
+                      src={ri.src}
+                      srcSet={ri.srcSet || undefined}
+                      sizes={ri.srcSet ? '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw' : undefined}
+                      alt={evt.titleI18n.en}
+                      loading="lazy"
+                      decoding="async"
+                      width={800} height={450}
+                      className={`w-full h-full ${useContain ? 'object-contain' : 'object-cover group-hover:scale-105 transition-transform duration-500'}`}
+                      onError={(e) => {
+                        const img = e.currentTarget;
+                        const fb = '/assets/optimized/image_b3b470e9-960.webp';
+                        if (img.src !== window.location.origin + fb) { img.srcset = ''; img.src = fb; }
+                      }}
+                    />
+                  </div>
+                );
+              })()}
 
               <div className="p-6 flex flex-col flex-1">
                 {/* Metadata line */}

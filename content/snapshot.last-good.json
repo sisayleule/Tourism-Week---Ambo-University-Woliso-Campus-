@@ -145,7 +145,7 @@
       },
       "status": "scheduled",
       "featured": false,
-      "image": "/assets/events/event-great-run.jpg"
+      "image": "/assets/events/Carnival (Cultural Show).jpg"
     },
     {
       "id": "657a2586-c6e7-40b6-af7a-ca53ed1d625f",
@@ -336,7 +336,8 @@
         "om": ""
       },
       "status": "scheduled",
-      "featured": false
+      "featured": false,
+      "image": "/assets/events/End of the Programme — Closing Ceremony.png"
     }
   ],
   "editionDays": [

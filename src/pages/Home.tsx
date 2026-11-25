@@ -601,10 +601,15 @@ export const Home: React.FC = () => {
               <span
                 className="font-extrabold uppercase font-editorial"
                 style={{
-                  fontSize: 'clamp(1.2rem, 2.25vw + 0.3rem, 1.65rem)',
-                  color: '#F5C842',
-                  textShadow: '0 0 20px rgba(217,164,65,0.6), 0 2px 8px rgba(0,0,0,0.9)',
-                  letterSpacing: '0.2em',
+                  fontSize: 'clamp(1.8rem, 3.4vw + 0.45rem, 2.5rem)',
+                  letterSpacing: '0.22em',
+                  /* Gold shimmer gradient text */
+                  background: 'linear-gradient(90deg, #C8860A 0%, #F5C842 30%, #FFE98A 52%, #F5C842 72%, #C8860A 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  /* Deep glow so it pops off the dark video */
+                  filter: 'drop-shadow(0 0 12px rgba(245,200,66,0.75)) drop-shadow(0 2px 6px rgba(0,0,0,0.9))',
                 }}
               >
                 {edition?.editionNameI18n[currentLang] ?? edition?.editionNameI18n.en}

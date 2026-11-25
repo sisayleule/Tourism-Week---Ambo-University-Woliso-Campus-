@@ -408,8 +408,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({ event, currentLang, onAddTo
         // Match on slug suffix so it works regardless of edition-prefix.
         const useContain =
           event.slug.includes('miss-mr-tourism') ||
-          event.slug.includes('miss-and-mr-tourism') ||
-          event.slug.includes('guest-tour');
+          event.slug.includes('miss-and-mr-tourism');
         return (
           <div className={`shrink-0 w-full md:w-40 h-28 rounded-xl overflow-hidden ${useContain ? 'bg-stone-200 dark:bg-stone-800' : 'bg-stone-100 dark:bg-stone-900'}`}>
             <img

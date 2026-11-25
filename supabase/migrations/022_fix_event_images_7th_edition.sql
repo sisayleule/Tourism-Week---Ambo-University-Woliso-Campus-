@@ -41,7 +41,7 @@ WHERE  slug LIKE '%great%run%'
 
 -- Day 3 afternoon — Miss & Mr. Tourism Pageant
 UPDATE public.events
-SET    image_url  = '/assets/events/event-miss-mr-tourism.jpg',
+SET    image_url  = '/assets/events/event-miss-mr-tourism.png',
        updated_at = now()
 WHERE  slug LIKE '%miss-mr-tourism%'
    OR  slug LIKE '%miss-and-mr-tourism%';
@@ -61,7 +61,7 @@ WHERE  slug LIKE '%football%';
 
 -- Day 5 morning — Guest Tour to Regional Eco-Tourism & Heritage Sites
 UPDATE public.events
-SET    image_url  = '/assets/events/event-guest-tour.jpg',
+SET    image_url  = '/assets/events/event-guest-tour.png',
        updated_at = now()
 WHERE  slug LIKE '%guest-tour%';
 

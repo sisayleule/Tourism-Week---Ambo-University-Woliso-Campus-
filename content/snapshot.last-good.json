@@ -209,7 +209,7 @@
       },
       "status": "scheduled",
       "featured": true,
-      "image": "/assets/events/event-miss-mr-tourism.jpg"
+      "image": "/assets/events/event-miss-mr-tourism.png"
     },
     {
       "id": "99cabd1b-9a94-43fb-bc28-5bd7cd86cd8b",
@@ -305,7 +305,7 @@
       },
       "status": "scheduled",
       "featured": true,
-      "image": "/assets/events/event-guest-tour.jpg"
+      "image": "/assets/events/event-guest-tour.png"
     },
     {
       "id": "4529f206-cc5e-45a9-a19d-645b2c6cb32f",

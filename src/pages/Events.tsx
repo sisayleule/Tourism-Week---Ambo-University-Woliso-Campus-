@@ -397,8 +397,7 @@ export const Events: React.FC = () => {
                 // Match on slug suffix so it works regardless of edition-prefix.
                 const useContain =
                   evt.slug.includes('miss-mr-tourism') ||
-                  evt.slug.includes('miss-and-mr-tourism') ||
-                  evt.slug.includes('guest-tour');
+                  evt.slug.includes('miss-and-mr-tourism');
                 const ri = resolveImage(evt.image || '/assets/aistudio/image_b3b470e9.png');
                 return (
                   <div

@@ -596,46 +596,18 @@ export const Home: React.FC = () => {
             style={{ gap: 'clamp(8px, 1.4vh, 16px)' }}
           >
 
-            {/* Overline badge — "Tourism Week Round 7th" */}
+            {/* Overline — "Tourism Week Round 7th" */}
             <div className="fade-rise delay-100 inline-flex items-center justify-center">
               <span
-                className="inline-flex items-center gap-2 px-5 py-2 rounded-full font-extrabold uppercase tracking-[0.2em] font-editorial"
+                className="font-extrabold uppercase font-editorial"
                 style={{
-                  fontSize: 'clamp(0.8rem, 1.5vw + 0.2rem, 1.1rem)',
-                  background: 'linear-gradient(135deg, rgba(217,164,65,0.22) 0%, rgba(217,164,65,0.08) 100%)',
-                  border: '1.5px solid rgba(217,164,65,0.55)',
+                  fontSize: 'clamp(1.2rem, 2.25vw + 0.3rem, 1.65rem)',
                   color: '#F5C842',
                   textShadow: '0 0 20px rgba(217,164,65,0.6), 0 2px 8px rgba(0,0,0,0.9)',
-                  boxShadow: '0 0 24px rgba(217,164,65,0.18), inset 0 1px 0 rgba(255,255,255,0.08)',
-                  backdropFilter: 'blur(8px)',
                   letterSpacing: '0.2em',
                 }}
               >
-                <span
-                  aria-hidden="true"
-                  style={{
-                    display: 'inline-block',
-                    width: 6,
-                    height: 6,
-                    borderRadius: '50%',
-                    background: '#D9A441',
-                    boxShadow: '0 0 8px #D9A441',
-                    flexShrink: 0,
-                  }}
-                />
                 {edition?.editionNameI18n[currentLang] ?? edition?.editionNameI18n.en}
-                <span
-                  aria-hidden="true"
-                  style={{
-                    display: 'inline-block',
-                    width: 6,
-                    height: 6,
-                    borderRadius: '50%',
-                    background: '#D9A441',
-                    boxShadow: '0 0 8px #D9A441',
-                    flexShrink: 0,
-                  }}
-                />
               </span>
             </div>
 

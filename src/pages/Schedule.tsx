@@ -405,14 +405,19 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({ event, currentLang, onAddTo
 
       {/* Optional event image */}
       {event.image && (() => {
-        // These events need contain so the full image shows without cropping.
-        // Match on slug suffix so it works regardless of edition-prefix.
+        // Use contain for specific event images that must not be cropped.
+        // Checked against BOTH slug and image path for resilience.
         const useContain =
           event.slug.includes('miss-mr-tourism') ||
           event.slug.includes('miss-and-mr-tourism') ||
-          event.slug.includes('guest-tour');
+          event.slug.includes('guest-tour') ||
+          event.image.includes('event-miss-mr-tourism') ||
+          event.image.includes('event-guest-tour');
         return (
-          <div className={`shrink-0 w-full md:w-40 h-28 rounded-xl overflow-hidden ${useContain ? 'bg-stone-200 dark:bg-stone-800' : 'bg-stone-100 dark:bg-stone-900'}`}>
+          <div
+            className="shrink-0 w-full md:w-40 h-28 rounded-xl overflow-hidden"
+            style={{ background: useContain ? '#e7e5e4' : undefined }}
+          >
             <img
               src={event.image}
               alt={event.titleI18n.en}

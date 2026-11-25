@@ -393,17 +393,19 @@ export const Events: React.FC = () => {
             >
               {/* Image — same fit as Festival Highlights cards */}
               {(() => {
-                // These events need contain so the full image shows without cropping.
-                // Match on slug suffix so it works regardless of edition-prefix.
+                const ri = resolveImage(evt.image || '/assets/aistudio/image_b3b470e9.png');
+                // Use contain for specific event images that must not be cropped.
+                // Checked against BOTH slug and image path for resilience.
                 const useContain =
                   evt.slug.includes('miss-mr-tourism') ||
                   evt.slug.includes('miss-and-mr-tourism') ||
-                  evt.slug.includes('guest-tour');
-                const ri = resolveImage(evt.image || '/assets/aistudio/image_b3b470e9.png');
+                  evt.slug.includes('guest-tour') ||
+                  (evt.image || '').includes('event-miss-mr-tourism') ||
+                  (evt.image || '').includes('event-guest-tour');
                 return (
                   <div
-                    className={`w-full overflow-hidden${useContain ? ' bg-stone-200 dark:bg-stone-800' : ' bg-stone-100 dark:bg-stone-900'}`}
-                    style={{ aspectRatio: '16/9' }}
+                    className="w-full overflow-hidden"
+                    style={{ aspectRatio: '16/9', background: useContain ? '#e7e5e4' : undefined }}
                   >
                     <img
                       src={ri.src}

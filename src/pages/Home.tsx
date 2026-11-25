@@ -603,6 +603,7 @@ export const Home: React.FC = () => {
                 style={{
                   fontSize: 'clamp(2.25rem, 4.25vw + 0.56rem, 3.125rem)',
                   fontWeight: 900,
+                  lineHeight: 1.05,
                   letterSpacing: '0.22em',
                   /* Gold shimmer gradient text */
                   background: 'linear-gradient(90deg, #C8860A 0%, #F5C842 30%, #FFE98A 52%, #F5C842 72%, #C8860A 100%)',

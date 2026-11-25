@@ -599,9 +599,10 @@ export const Home: React.FC = () => {
             {/* Overline — "Tourism Week Round 7th" */}
             <div className="fade-rise delay-100 inline-flex items-center justify-center">
               <span
-                className="font-extrabold uppercase font-editorial"
+                className="font-black uppercase font-editorial"
                 style={{
                   fontSize: 'clamp(1.8rem, 3.4vw + 0.45rem, 2.5rem)',
+                  fontWeight: 900,
                   letterSpacing: '0.22em',
                   /* Gold shimmer gradient text */
                   background: 'linear-gradient(90deg, #C8860A 0%, #F5C842 30%, #FFE98A 52%, #F5C842 72%, #C8860A 100%)',

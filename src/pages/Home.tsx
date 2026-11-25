@@ -601,7 +601,7 @@ export const Home: React.FC = () => {
               <span
                 className="font-black uppercase font-editorial"
                 style={{
-                  fontSize: 'clamp(1.8rem, 3.4vw + 0.45rem, 2.5rem)',
+                  fontSize: 'clamp(2.25rem, 4.25vw + 0.56rem, 3.125rem)',
                   fontWeight: 900,
                   letterSpacing: '0.22em',
                   /* Gold shimmer gradient text */

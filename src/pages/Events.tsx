@@ -394,11 +394,11 @@ export const Events: React.FC = () => {
               {/* Image — same fit as Festival Highlights cards */}
               {(() => {
                 // These events have portrait/tall photos — contain them so nothing is cropped.
-                const containSlugs = new Set([
-                  '7-annual-tourism-week-miss-mr-tourism-pageant',
-                  '7-annual-tourism-week-guest-tour-woliso-destinations',
-                ]);
-                const useContain = containSlugs.has(evt.slug);
+                // Match on slug suffix so it works regardless of edition-prefix.
+                const useContain =
+                  evt.slug.includes('miss-mr-tourism') ||
+                  evt.slug.includes('miss-and-mr-tourism') ||
+                  evt.slug.includes('guest-tour');
                 const ri = resolveImage(evt.image || '/assets/aistudio/image_b3b470e9.png');
                 return (
                   <div

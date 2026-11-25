@@ -112,7 +112,8 @@
         "om": "Karra Guddaa Mooraa Wolisoo → Sarkiyuutii Magaalaa → Deebi'uu"
       },
       "status": "scheduled",
-      "featured": true
+      "featured": true,
+      "image": "/assets/events/event-cleaning-campaign.jpg"
     },
     {
       "id": "3ea67ffb-518d-4c79-89ec-119a27e71746",
@@ -143,7 +144,8 @@
         "om": "Woliso Campus Main Gate → Town→ Return "
       },
       "status": "scheduled",
-      "featured": false
+      "featured": false,
+      "image": "/assets/events/event-great-run.jpg"
     },
     {
       "id": "657a2586-c6e7-40b6-af7a-ca53ed1d625f",
@@ -174,7 +176,8 @@
         "om": ""
       },
       "status": "scheduled",
-      "featured": true
+      "featured": true,
+      "image": "/assets/events/event-great-run.jpg"
     },
     {
       "id": "14b504dd-1f4b-402a-9cbc-f5db9fd109d7",
@@ -206,7 +209,7 @@
       },
       "status": "scheduled",
       "featured": true,
-      "image": "/assets/aistudio/image_6eb824fd.png"
+      "image": "/assets/events/event-miss-mr-tourism.jpg"
     },
     {
       "id": "99cabd1b-9a94-43fb-bc28-5bd7cd86cd8b",
@@ -238,7 +241,7 @@
       },
       "status": "scheduled",
       "featured": true,
-      "image": "/assets/aistudio/image_25e4d059.png"
+      "image": "/assets/events/event-seminar-awards.png"
     },
     {
       "id": "56e30c2b-78ed-40cf-8bc6-72162b766d68",
@@ -270,7 +273,7 @@
       },
       "status": "scheduled",
       "featured": false,
-      "image": "/assets/aistudio/image_6eb824fd.png"
+      "image": "/assets/events/event-football.jpg.png"
     },
     {
       "id": "c8fa7af2-0ddc-42e0-a742-d014023aa7e7",
@@ -302,7 +305,7 @@
       },
       "status": "scheduled",
       "featured": true,
-      "image": "/assets/aistudio/image_7544bf77.png"
+      "image": "/assets/events/event-guest-tour.jpg"
     },
     {
       "id": "4529f206-cc5e-45a9-a19d-645b2c6cb32f",

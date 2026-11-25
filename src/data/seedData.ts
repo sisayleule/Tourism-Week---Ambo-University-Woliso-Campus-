@@ -106,7 +106,7 @@ export const SEED_EVENTS: EventItem[] = [
     },
     status: 'scheduled',
     featured: true,
-    image: '/assets/aistudio/image_fe8a90e0.png',
+    image: '/assets/events/event-cleaning-campaign.jpg',
   },
 
   // DAY 2
@@ -142,7 +142,7 @@ export const SEED_EVENTS: EventItem[] = [
     },
     status: 'scheduled',
     featured: true,
-    image: '/assets/aistudio/image_9108d7cc.png',
+    image: '/assets/events/event-great-run.jpg',
     subEvents: [
       {
         titleI18n: {
@@ -212,7 +212,7 @@ export const SEED_EVENTS: EventItem[] = [
     },
     status: 'scheduled',
     featured: true,
-    image: '/assets/aistudio/image_3856f7f5.png',
+    image: '/assets/events/event-great-run.jpg',
   },
 
   // DAY 3 AFTERNOON
@@ -248,7 +248,7 @@ export const SEED_EVENTS: EventItem[] = [
     },
     status: 'scheduled',
     featured: true,
-    image: '/assets/aistudio/image_db590259.png',
+    image: '/assets/events/event-miss-mr-tourism.jpg',
   },
 
   // DAY 4 MORNING
@@ -284,7 +284,7 @@ export const SEED_EVENTS: EventItem[] = [
     },
     status: 'scheduled',
     featured: true,
-    image: '/assets/aistudio/image_25e4d059.png',
+    image: '/assets/events/event-seminar-awards.png',
     subEvents: [
       {
         titleI18n: {
@@ -354,7 +354,7 @@ export const SEED_EVENTS: EventItem[] = [
     },
     status: 'scheduled',
     featured: false,
-    image: '/assets/aistudio/image_6eb824fd.png',
+    image: '/assets/events/event-football.jpg.png',
   },
 
   // DAY 5 MORNING
@@ -390,7 +390,7 @@ export const SEED_EVENTS: EventItem[] = [
     },
     status: 'scheduled',
     featured: true,
-    image: '/assets/aistudio/image_7544bf77.png',
+    image: '/assets/events/event-guest-tour.jpg',
   },
 
   // DAY 5 AFTERNOON
@@ -426,7 +426,7 @@ export const SEED_EVENTS: EventItem[] = [
     },
     status: 'scheduled',
     featured: true,
-    image: '/assets/aistudio/image_c9b19ed8.png',
+    image: '/assets/events/event-miss-mr-tourism.jpg',
   },
 ];
 

@@ -401,12 +401,12 @@ async function fetchFreshSnapshot() {
   // built site always displays the right photos regardless of DB state.
   //
   // Mapping (slug substring → correct image path):
-  //   miss-mr-tourism  → /assets/events/event-miss-mr-tourism.png  (Day 3 afternoon)
-  //   guest-tour       → /assets/events/event-guest-tour.png       (Day 5 morning)
+  //   miss-mr-tourism  → /assets/events/event-miss-mr-tourism.jpg  (Day 3 afternoon)
+  //   guest-tour       → /assets/events/event-guest-tour.jpg       (Day 5 morning)
   const EVENT_IMAGE_OVERRIDES = [
-    { slugFragment: 'miss-mr-tourism',    image: '/assets/events/event-miss-mr-tourism.png' },
-    { slugFragment: 'miss-and-mr-tourism', image: '/assets/events/event-miss-mr-tourism.png' },
-    { slugFragment: 'guest-tour',          image: '/assets/events/event-guest-tour.png' },
+    { slugFragment: 'miss-mr-tourism',     image: '/assets/events/event-miss-mr-tourism.jpg' },
+    { slugFragment: 'miss-and-mr-tourism', image: '/assets/events/event-miss-mr-tourism.jpg' },
+    { slugFragment: 'guest-tour',          image: '/assets/events/event-guest-tour.jpg' },
   ];
   for (const ev of events) {
     for (const override of EVENT_IMAGE_OVERRIDES) {

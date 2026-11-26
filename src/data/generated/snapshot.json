@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-22T18:47:36.002Z",
+  "generatedAt": "2026-11-26T04:18:16.579Z",
   "source": "supabase",
   "edition": {
     "id": "15bda808-3519-4f74-a8c8-750706d4b186",
     "number": 7,
     "editionNameI18n": {
-      "en": "Tourism Week Round 8th",
+      "en": "Tourism Week Round 7th",
       "am": "የቱሪዝም ሳምንት - 7ኛ ዙር",
       "om": "Torbee Tuurizimii Marsaa 7ffaa"
     },
     "titleI18n": {
-      "en": "Tourism Week Round 8th",
+      "en": "Tourism Week Round 7th",
       "am": "የቱሪዝም ሳምንት - 7ኛ ዙር",
       "om": "Torbee Tuurizimii Marsaa 7ffaa"
     },
@@ -24,8 +24,8 @@
       "am": "ዘላቂ ቅርስን ማስተዋወቅ፣ የወጣቶችን አቅም መገንባት እና ማህበረሰባዊ መስተንግዶ ",
       "om": "Hambaalee Itti Fufiinsa Qaban Beeksisuu fi Kunuunsuu"
     },
-    "startDateEC": "28/03/2018",
-    "endDateEC": "03/04/2018",
+    "startDateEC": "28/03/2019",
+    "endDateEC": "03/04/2019",
     "dateRangeDisplayI18n": {
       "en": "2026-12-07 — 2026-12-12",
       "am": "",
@@ -35,9 +35,9 @@
     "endDateGC": "2026-12-12",
     "status": "upcoming",
     "venueI18n": {
-      "en": "Ambo University Woliso Campus",
-      "am": "Ambo University Woliso Campus",
-      "om": "Ambo University Woliso Campus"
+      "en": "Ambo University Woliso Campus ",
+      "am": "Ambo University Woliso Campus ",
+      "om": "Ambo University Woliso Campus "
     },
     "hostDepartmentI18n": {
       "en": "Department of Tourism and Hotel Management",
@@ -62,9 +62,9 @@
     },
     "subtitleI18n": null,
     "themeHighlightI18n": {
-      "en": "Celebrate ",
+      "en": "Our Beauty",
       "am": "ውበታችንን ያግኙ",
-      "om": "Celebrate "
+      "om": "Our Beauty"
     },
     "heroPosterUrl": null,
     "heroVideoUrl": null,
@@ -209,7 +209,7 @@
       },
       "status": "scheduled",
       "featured": true,
-      "image": "/assets/events/event-miss-mr-tourism.png"
+      "image": "/assets/events/event-miss-mr-tourism.jpg"
     },
     {
       "id": "99cabd1b-9a94-43fb-bc28-5bd7cd86cd8b",
@@ -305,7 +305,7 @@
       },
       "status": "scheduled",
       "featured": true,
-      "image": "/assets/events/event-guest-tour.png"
+      "image": "/assets/events/event-guest-tour.jpg"
     },
     {
       "id": "4529f206-cc5e-45a9-a19d-645b2c6cb32f",
@@ -451,6 +451,916 @@
       "mediaType": "image",
       "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/ad9f15c5-83d0-4322-8142-e667c1e542d3.webp",
       "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/ad9f15c5-83d0-4322-8142-e667c1e542d3.webp"
+    },
+    {
+      "id": "65f04db9-2f66-4ab5-b5a8-00b5c445790f",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/276c1a3b-329d-4038-aec4-7c255b4e51b5.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/276c1a3b-329d-4038-aec4-7c255b4e51b5.webp"
+    },
+    {
+      "id": "8d954fc1-c91a-49ef-8344-8289dd193075",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/a48ae20a-8146-4bfe-9fc8-ea2bf948bbaf.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/a48ae20a-8146-4bfe-9fc8-ea2bf948bbaf.webp"
+    },
+    {
+      "id": "1aff1f23-e11e-4843-b4aa-aba2fd6b0d2e",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/5c840dcb-4953-4aae-bf17-2970d0843a9b.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/5c840dcb-4953-4aae-bf17-2970d0843a9b.webp"
+    },
+    {
+      "id": "abea0478-cf86-4e7c-abd8-c49cd690a9a6",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/0f6d5125-d542-4afb-beeb-e481529b1479.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/0f6d5125-d542-4afb-beeb-e481529b1479.webp"
+    },
+    {
+      "id": "fda13672-7e4e-440c-a950-b01278919809",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/8c31efe0-2c7c-44a2-a484-45845027dc22.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/8c31efe0-2c7c-44a2-a484-45845027dc22.webp"
+    },
+    {
+      "id": "bff69966-9a7b-48e6-869e-3af996230edb",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/5c278aaf-0139-4fb4-9ca5-b506b88f4b08.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/5c278aaf-0139-4fb4-9ca5-b506b88f4b08.webp"
+    },
+    {
+      "id": "5358804b-87be-478f-8589-7b4cbdae3ab8",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/9406f19e-c1fd-4528-8bb7-b2e9bfe9fb75.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/9406f19e-c1fd-4528-8bb7-b2e9bfe9fb75.webp"
+    },
+    {
+      "id": "e4222484-ce45-46aa-9f8e-41b88766ecca",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/dc1bac2b-1bb0-4cd3-a7f8-a0ad95d6cb84.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/dc1bac2b-1bb0-4cd3-a7f8-a0ad95d6cb84.webp"
+    },
+    {
+      "id": "022c1ec5-2a4c-4ff4-baa7-b72af45f8074",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/11076dd5-4d65-41ab-991d-e87af60d16ac.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/11076dd5-4d65-41ab-991d-e87af60d16ac.webp"
+    },
+    {
+      "id": "14af4b33-b3ce-4bff-847e-2648510785d0",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/b87d500c-0cd3-4c17-bc84-1fc586087198.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/b87d500c-0cd3-4c17-bc84-1fc586087198.webp"
+    },
+    {
+      "id": "a2cea467-4219-4a01-8c35-379ae7372c61",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/10cc16df-ab9b-435d-977a-412eaf89afd8.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/10cc16df-ab9b-435d-977a-412eaf89afd8.webp"
+    },
+    {
+      "id": "52da969e-07c3-4571-acbb-b604d0aea44c",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/17fdfe8e-e116-4f72-a708-f6a8ff55c433.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/17fdfe8e-e116-4f72-a708-f6a8ff55c433.webp"
+    },
+    {
+      "id": "bf734fbc-d489-478e-8d68-79a560eab688",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/0d0b5d58-1967-4088-b8c7-9f3ab3bfcc31.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/0d0b5d58-1967-4088-b8c7-9f3ab3bfcc31.webp"
+    },
+    {
+      "id": "069d4d7a-2ed1-4332-9f7a-43e137ffaef4",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/cb4a7fce-cf85-459b-802e-1d50ea831bba.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/cb4a7fce-cf85-459b-802e-1d50ea831bba.webp"
+    },
+    {
+      "id": "4bccd38c-315f-405f-9d56-21015149f47d",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/0cd8bd01-f68c-41d2-a0a8-7f85f08dc2fc.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/0cd8bd01-f68c-41d2-a0a8-7f85f08dc2fc.webp"
+    },
+    {
+      "id": "8098f47c-8a39-46bf-bcf1-ffa3698c9c77",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/2c66b88a-f5e2-4a5c-a72e-e998675e5fec.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/2c66b88a-f5e2-4a5c-a72e-e998675e5fec.webp"
+    },
+    {
+      "id": "9f147499-6dde-4c0a-ae09-9dd226ce4b27",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/3f4e8b5e-78ff-4093-b7d4-bb83b918fd95.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/3f4e8b5e-78ff-4093-b7d4-bb83b918fd95.webp"
+    },
+    {
+      "id": "0dc27539-142d-478f-865d-c8e4a189d468",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/e685942d-07b3-451d-8199-c56b9a6a8aea.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/e685942d-07b3-451d-8199-c56b9a6a8aea.webp"
+    },
+    {
+      "id": "7911b214-0c5c-4e86-97c0-6e4000c722ac",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/01bf7e3b-aeb0-4376-aa60-30edc4fd39e6.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/01bf7e3b-aeb0-4376-aa60-30edc4fd39e6.webp"
+    },
+    {
+      "id": "5d46fc9a-ae3f-49c5-9049-00bfac3f30b6",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/27832863-469f-46f4-a699-b510ce000d27.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/27832863-469f-46f4-a699-b510ce000d27.webp"
+    },
+    {
+      "id": "fa54d13e-fdac-45ef-bb48-0efaf64c730a",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/f3dc05c3-f053-45a6-9a10-8eebf9803b0b.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/f3dc05c3-f053-45a6-9a10-8eebf9803b0b.webp"
+    },
+    {
+      "id": "d492b73c-ad56-49d9-9f72-ff9a25a20512",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/9d951cfb-8e9f-465f-b15b-410297b7ba5f.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/9d951cfb-8e9f-465f-b15b-410297b7ba5f.webp"
+    },
+    {
+      "id": "04622784-baf3-4d37-8069-ef1688265138",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/5c385c43-213f-4543-ac70-20d9aa173196.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/5c385c43-213f-4543-ac70-20d9aa173196.webp"
+    },
+    {
+      "id": "fedf79b5-a62a-4b59-9ddf-80370e7e20fa",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/0d548d85-f573-42dc-928b-ceec388fc3d3.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/0d548d85-f573-42dc-928b-ceec388fc3d3.webp"
+    },
+    {
+      "id": "e879ba86-748a-457f-a699-4e00f3c55c94",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/25016c69-3900-4fa1-98a0-0398708f181d.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/25016c69-3900-4fa1-98a0-0398708f181d.webp"
+    },
+    {
+      "id": "4004fa83-ca8a-4d43-89a5-c9cffbda04fe",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/baedef93-8a83-4122-887e-7d05b7f83b4d.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/baedef93-8a83-4122-887e-7d05b7f83b4d.webp"
+    },
+    {
+      "id": "37848377-d632-4128-b153-0ec5cb34483b",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/648d93e3-0ce7-4617-9440-50a7fd082f60.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/648d93e3-0ce7-4617-9440-50a7fd082f60.webp"
+    },
+    {
+      "id": "c90c608a-8038-49fb-87b7-c75c4d505ce0",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/4a427848-05e5-4341-b0a1-9b804fadb165.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/4a427848-05e5-4341-b0a1-9b804fadb165.webp"
+    },
+    {
+      "id": "3cac957e-3c93-4ad5-8c0a-ffc86f441e2f",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/c8bf0ca6-abfb-4d6f-9078-a45393f7ec5e.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/c8bf0ca6-abfb-4d6f-9078-a45393f7ec5e.webp"
+    },
+    {
+      "id": "b38d1768-40c2-43d6-97c3-d607a732c7df",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/08b7f6fd-7aff-4589-ade6-dfe47318332d.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/08b7f6fd-7aff-4589-ade6-dfe47318332d.webp"
+    },
+    {
+      "id": "e5bf7b59-e9a1-4148-9c1e-77bd5d470574",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/224279e1-e0d9-4517-a021-8d151de3dda7.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/224279e1-e0d9-4517-a021-8d151de3dda7.webp"
+    },
+    {
+      "id": "8c75516e-5180-4427-800a-6cd11f44f654",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/0e513c94-a0fc-4a49-8660-e56416064200.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/0e513c94-a0fc-4a49-8660-e56416064200.webp"
+    },
+    {
+      "id": "e008be73-5e00-46d0-b53a-fc26c45348aa",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/3004e42d-43e6-4709-ba04-bb06d17acfce.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/3004e42d-43e6-4709-ba04-bb06d17acfce.webp"
+    },
+    {
+      "id": "5c98217f-2d88-4885-853a-4c9b5c60ced5",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/7bac4af0-b661-4b9a-939a-a3eb56b8f4cd.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/7bac4af0-b661-4b9a-939a-a3eb56b8f4cd.webp"
+    },
+    {
+      "id": "a1a96dca-1bd7-4ab6-890f-eddf2247e9a8",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/91d4a16e-9ff8-4e2b-a976-b9219484abff.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/91d4a16e-9ff8-4e2b-a976-b9219484abff.webp"
+    },
+    {
+      "id": "bd2ae6ed-9293-4b0c-b98a-2cf6dec9a6b3",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/ce1d2daf-fb7e-4714-b8a2-e248d6628754.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/ce1d2daf-fb7e-4714-b8a2-e248d6628754.webp"
+    },
+    {
+      "id": "6765b9b4-efc4-4e0b-bb41-df1e3e187b39",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/e4b68d17-8055-4da1-87f5-ea7f310c8e3c.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/e4b68d17-8055-4da1-87f5-ea7f310c8e3c.webp"
+    },
+    {
+      "id": "04532ffd-33f9-4767-8870-4a4b4eee243e",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/9d5c2528-a74e-4c7a-90d1-346c247fe33c.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/9d5c2528-a74e-4c7a-90d1-346c247fe33c.webp"
+    },
+    {
+      "id": "167ca499-3740-4a49-8679-c2b388661b08",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/58cf4388-4d53-4fa5-a8a0-ce7dd501617f.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/58cf4388-4d53-4fa5-a8a0-ce7dd501617f.webp"
+    },
+    {
+      "id": "f77955b3-c79a-4993-849b-df3f1129effa",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/56946499-14b2-44d1-90c2-127c0af057c0.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/56946499-14b2-44d1-90c2-127c0af057c0.webp"
+    },
+    {
+      "id": "638be6a3-2685-445b-8603-f042836b8dc3",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/589251e4-8fc6-435d-8c34-a8e9e230cca6.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/589251e4-8fc6-435d-8c34-a8e9e230cca6.webp"
+    },
+    {
+      "id": "62ba5636-0f39-45fc-8bd0-66014ed54ded",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/2f6b8795-e76f-43b6-aeed-f01bb2510e83.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/2f6b8795-e76f-43b6-aeed-f01bb2510e83.webp"
+    },
+    {
+      "id": "ff344e10-184c-4547-8fb4-728ecc18c58f",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/b4a42aca-4313-4f97-880d-2ae6487d515b.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/b4a42aca-4313-4f97-880d-2ae6487d515b.webp"
+    },
+    {
+      "id": "d72752d1-c1ef-4bf0-910a-aba384b4cae7",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/b4358236-9231-4f41-a522-8042fba4955c.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/b4358236-9231-4f41-a522-8042fba4955c.webp"
+    },
+    {
+      "id": "5e01a221-9dda-4392-87cf-3b56b4e0a97e",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/ef20d074-e2b4-45e9-95d3-8867c41c60a7.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/ef20d074-e2b4-45e9-95d3-8867c41c60a7.webp"
+    },
+    {
+      "id": "8cac374a-41b1-4b86-86af-617d87acd8c4",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/c9916827-3cf6-47c3-94d4-7ba0312879a3.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/c9916827-3cf6-47c3-94d4-7ba0312879a3.webp"
+    },
+    {
+      "id": "c3f5700b-68f7-40e0-a702-2f1b24ad46ae",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/b3a73c3e-5a4b-4dd2-912d-8d224c119f02.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/b3a73c3e-5a4b-4dd2-912d-8d224c119f02.webp"
+    },
+    {
+      "id": "4135eed0-4ec8-4a38-a177-d1ad0939f96f",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/1813c204-073b-4103-9ee3-8ca073e7e349.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/1813c204-073b-4103-9ee3-8ca073e7e349.webp"
+    },
+    {
+      "id": "86e0108a-28b1-4f99-aa51-9ccadb16f12f",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/20bc7245-89a7-4553-bab4-50c21f3c5c1a.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/20bc7245-89a7-4553-bab4-50c21f3c5c1a.webp"
+    },
+    {
+      "id": "c97236c6-1973-4ec7-8651-802c499b4932",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/a8f02edc-a34b-4f7d-a9f1-bdf8e10c2376.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/a8f02edc-a34b-4f7d-a9f1-bdf8e10c2376.webp"
+    },
+    {
+      "id": "3331a05d-cf68-4bfa-b0c1-58fd46abaf99",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/7b378327-95b3-4eee-84d2-bceed6712d2f.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/7b378327-95b3-4eee-84d2-bceed6712d2f.webp"
+    },
+    {
+      "id": "84e8ca64-1971-405a-96a0-ba9fac1325a6",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/bb10692a-20d9-4a41-ad13-113d33e579fc.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/bb10692a-20d9-4a41-ad13-113d33e579fc.webp"
+    },
+    {
+      "id": "abe79bf9-f8ff-4a09-8329-eb13001881e8",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/be8e6a4f-94b5-49ca-b4ec-fff6a337a95c.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/be8e6a4f-94b5-49ca-b4ec-fff6a337a95c.webp"
+    },
+    {
+      "id": "3adb448f-2aa9-49e6-a1c4-f94ef5723bf4",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/eb336cd3-2678-4c01-801d-76252c23707d.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/eb336cd3-2678-4c01-801d-76252c23707d.webp"
+    },
+    {
+      "id": "c6f8b848-ab1f-4036-9dbf-da0f71382c1a",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/fe7aa6b4-d79a-4972-80c6-1206faf50e65.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/fe7aa6b4-d79a-4972-80c6-1206faf50e65.webp"
+    },
+    {
+      "id": "ad82c629-44e8-4035-9b1a-581bf01a4aad",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/f070cb42-d69f-4435-b4ef-cf5a0e986a69.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/f070cb42-d69f-4435-b4ef-cf5a0e986a69.webp"
+    },
+    {
+      "id": "f755fd50-1379-4cde-856a-e14a38120a7b",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/1470e5dc-a2fc-4949-9b0a-fbcfae941253.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/1470e5dc-a2fc-4949-9b0a-fbcfae941253.webp"
+    },
+    {
+      "id": "b382ce72-4a77-4034-b425-86165dda027a",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/866e33b5-523b-4bc2-a586-0d8fcea2c511.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/866e33b5-523b-4bc2-a586-0d8fcea2c511.webp"
+    },
+    {
+      "id": "7cc17190-67c2-4242-9362-3faa9ed7a4c0",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/251f69b9-2739-4dbf-aeaa-e1e67f398bcd.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/251f69b9-2739-4dbf-aeaa-e1e67f398bcd.webp"
+    },
+    {
+      "id": "40952021-6933-4543-bcdd-c4f4a3d744c4",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/ad3e2ca2-cd9d-44d0-aea9-187822225d54.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/ad3e2ca2-cd9d-44d0-aea9-187822225d54.webp"
+    },
+    {
+      "id": "e1f09367-3d13-4130-8afe-484c10418d39",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/2432e450-e288-4495-9e5a-387077ed7e8d.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/2432e450-e288-4495-9e5a-387077ed7e8d.webp"
+    },
+    {
+      "id": "42a6f580-8fe3-41e3-8fc8-70dfe489fbd2",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/126ce848-fd6f-41a1-b992-cbd321fe81a3.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/126ce848-fd6f-41a1-b992-cbd321fe81a3.webp"
+    },
+    {
+      "id": "6c0e4679-9595-44de-8b87-a7f33b78caf3",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/75b76156-e4b7-471e-8f17-debc9a03657c.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/75b76156-e4b7-471e-8f17-debc9a03657c.webp"
+    },
+    {
+      "id": "b01cfe52-b90c-4dd9-b260-8363360e688e",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/f2b1e652-390f-48ea-8096-57ddbea2ac99.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/f2b1e652-390f-48ea-8096-57ddbea2ac99.webp"
+    },
+    {
+      "id": "25955981-b901-40c7-9bf1-a7d16f87160d",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/b0f9bd77-6c94-466c-912e-741a277500c2.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/b0f9bd77-6c94-466c-912e-741a277500c2.webp"
+    },
+    {
+      "id": "36844b3c-0363-410e-b2e7-7e6f51fb738e",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/e0d09de0-a12d-4c76-a2f0-b578e6f76fd4.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/e0d09de0-a12d-4c76-a2f0-b578e6f76fd4.webp"
+    },
+    {
+      "id": "323e346f-5bdc-4c8e-aa17-46ca34dbeae4",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/32b7b9ee-1ce7-43e5-89ef-a1efa2f7f905.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/32b7b9ee-1ce7-43e5-89ef-a1efa2f7f905.webp"
+    },
+    {
+      "id": "4776136c-eae6-4808-bde7-92908e9ec2e2",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/c11028eb-6433-4edd-98eb-7a2ec7d3dd76.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/c11028eb-6433-4edd-98eb-7a2ec7d3dd76.webp"
+    },
+    {
+      "id": "e73fb1d1-deb8-47e7-851a-5e5b9fc03270",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/bd2dfad0-c9ea-4afb-a785-ffa005cb60fd.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/bd2dfad0-c9ea-4afb-a785-ffa005cb60fd.webp"
+    },
+    {
+      "id": "99207e66-c32b-4735-8bd9-af597996e820",
+      "titleI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "year": 2026,
+      "category": "culture",
+      "mediaType": "image",
+      "url": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/a4e25d5f-e2dd-4934-9ddf-b73392a986fa.webp",
+      "thumbnail": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/gallery/a4e25d5f-e2dd-4934-9ddf-b73392a986fa.webp"
     }
   ],
   "sponsors": [
@@ -479,36 +1389,6 @@
   ],
   "committee": [
     {
-      "id": "ecb9e3aa-06df-4664-ae6b-04da65855e62",
-      "nameI18n": {
-        "en": "Aynalem Worku",
-        "am": "Aynalem Worku",
-        "om": "Aynalem Worku"
-      },
-      "roleI18n": {
-        "en": "Leader of Award & beauty Cotest",
-        "am": "Leader of Award & beauty Cotest",
-        "om": "Leader of Award & beauty Cotest"
-      },
-      "department": null,
-      "committeeKey": "award_beauty_contest",
-      "isLeader": true,
-      "editionId": "15bda808-3519-4f74-a8c8-750706d4b186",
-      "departmentI18n": {
-        "en": "",
-        "am": "",
-        "om": ""
-      },
-      "photoPlaceholder": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/committee/ecb9e3aa-06df-4664-ae6b-04da65855e62.webp",
-      "photoUrl": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/committee/ecb9e3aa-06df-4664-ae6b-04da65855e62.webp",
-      "bioI18n": null,
-      "contact": {
-        "email": null,
-        "phone": null,
-        "telegram": null
-      }
-    },
-    {
       "id": "f4d7bbbe-c8ad-4f4f-8e3a-71b236b396f0",
       "nameI18n": {
         "en": "Amanuale Derje",
@@ -516,9 +1396,9 @@
         "om": "Amanuale Derje"
       },
       "roleI18n": {
-        "en": "Leader of Documentation ",
-        "am": "Leader of Documentation ",
-        "om": "Leader of Documentation "
+        "en": "Leader of Documentation",
+        "am": "Leader of Documentation",
+        "om": "Leader of Documentation"
       },
       "department": null,
       "committeeKey": "documentation",
@@ -529,8 +1409,8 @@
         "am": "",
         "om": ""
       },
-      "photoPlaceholder": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/committee/f4d7bbbe-c8ad-4f4f-8e3a-71b236b396f0.webp",
-      "photoUrl": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/committee/f4d7bbbe-c8ad-4f4f-8e3a-71b236b396f0.webp",
+      "photoPlaceholder": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/872b8b56-d6f3-4207-94d6-290dcdd90a88.webp",
+      "photoUrl": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/872b8b56-d6f3-4207-94d6-290dcdd90a88.webp",
       "bioI18n": null,
       "contact": {
         "email": null,
@@ -559,8 +1439,8 @@
         "am": "",
         "om": ""
       },
-      "photoPlaceholder": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/committee/2357a182-ed2a-41da-8396-54fd94a5416b.webp",
-      "photoUrl": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/committee/2357a182-ed2a-41da-8396-54fd94a5416b.webp",
+      "photoPlaceholder": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/d4d7cdea-af16-4c46-ae5e-acf79fbac469.webp",
+      "photoUrl": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/d4d7cdea-af16-4c46-ae5e-acf79fbac469.webp",
       "bioI18n": null,
       "contact": {
         "email": null,
@@ -580,17 +1460,17 @@
         "am": "Leader of Sponsorship / Fundraising",
         "om": "Leader of Sponsorship / Fundraising"
       },
-      "department": "Devlope sponsor Letter, Make money ",
+      "department": "Devlope sponsor Letter, Make money",
       "committeeKey": "sponsorship_fundraising",
       "isLeader": true,
       "editionId": "15bda808-3519-4f74-a8c8-750706d4b186",
       "departmentI18n": {
-        "en": "Devlope sponsor Letter, Make money ",
-        "am": "Devlope sponsor Letter, Make money ",
-        "om": "Devlope sponsor Letter, Make money "
+        "en": "Devlope sponsor Letter, Make money",
+        "am": "Devlope sponsor Letter, Make money",
+        "om": "Devlope sponsor Letter, Make money"
       },
-      "photoPlaceholder": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/committee/f2a565ff-01dd-499f-b569-a5ef054b4b84.webp",
-      "photoUrl": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/committee/f2a565ff-01dd-499f-b569-a5ef054b4b84.webp",
+      "photoPlaceholder": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/e8bfa831-d013-4449-89c8-9ef47dce73d0.webp",
+      "photoUrl": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/e8bfa831-d013-4449-89c8-9ef47dce73d0.webp",
       "bioI18n": null,
       "contact": {
         "email": null,
@@ -606,9 +1486,9 @@
         "om": "Naol bekele"
       },
       "roleI18n": {
-        "en": "leader of Technical & physical Arrangement",
-        "am": "leader of Technical & physical Arrangement",
-        "om": "leader of Technical & physical Arrangement"
+        "en": "Leader of Technical & physical Arrangement",
+        "am": "Leader of Technical & physical Arrangement",
+        "om": "Leader of Technical & physical Arrangement"
       },
       "department": null,
       "committeeKey": "technical_physical",
@@ -619,8 +1499,38 @@
         "am": "",
         "om": ""
       },
-      "photoPlaceholder": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/committee/f7602274-cdeb-467b-af1a-3e7b98719092.webp",
-      "photoUrl": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/committee/f7602274-cdeb-467b-af1a-3e7b98719092.webp",
+      "photoPlaceholder": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/977e67cb-4def-4cdb-811b-f7d3f0efc010.webp",
+      "photoUrl": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/977e67cb-4def-4cdb-811b-f7d3f0efc010.webp",
+      "bioI18n": null,
+      "contact": {
+        "email": null,
+        "phone": null,
+        "telegram": null
+      }
+    },
+    {
+      "id": "ecb9e3aa-06df-4664-ae6b-04da65855e62",
+      "nameI18n": {
+        "en": "Aynalem Worku",
+        "am": "Aynalem Worku",
+        "om": "Aynalem Worku"
+      },
+      "roleI18n": {
+        "en": "Leader of Award & beauty Contest",
+        "am": "Leader of Award & beauty Contest",
+        "om": "Leader of Award & beauty Contest"
+      },
+      "department": null,
+      "committeeKey": "award_beauty_contest",
+      "isLeader": true,
+      "editionId": "15bda808-3519-4f74-a8c8-750706d4b186",
+      "departmentI18n": {
+        "en": "",
+        "am": "",
+        "om": ""
+      },
+      "photoPlaceholder": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/a2d7b68f-cf83-439f-84e6-3e5ae82b1ffe.webp",
+      "photoUrl": "https://otdaiykbrmjycjwfjndt.supabase.co/storage/v1/object/public/committee/a2d7b68f-cf83-439f-84e6-3e5ae82b1ffe.webp",
       "bioI18n": null,
       "contact": {
         "email": null,
@@ -872,6 +1782,27 @@
           "state": "published"
         }
       ]
+    },
+    {
+      "id": "311691ec-bef1-4ad7-b84c-6306b95858b4",
+      "key": "home.highlights",
+      "titleI18n": {
+        "en": "Top Festival Highlights",
+        "am": "Top Festival Highlights",
+        "om": "Top Festival Highlights"
+      },
+      "subtitleI18n": {
+        "en": "Cultural pageantry, athletic determination, and living heritage — Six days of celebration.",
+        "am": "Cultural pageantry, athletic determination, and living heritage — Six days of celebration.",
+        "om": "Cultural pageantry, athletic determination, and living heritage — Six days of celebration."
+      },
+      "bodyI18n": null,
+      "imageUrl": null,
+      "ctaLabelI18n": null,
+      "ctaUrl": null,
+      "state": "published",
+      "needsReview": false,
+      "items": []
     }
   ],
   "pastEditions": [

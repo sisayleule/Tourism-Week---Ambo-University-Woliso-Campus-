@@ -217,8 +217,10 @@ function adaptSponsor(row) {
     name: row.name,
     tier: mapSponsorTier(row.tier),
     logoPlaceholder: row.logo_url ?? '[SPONSOR LOGO]',
+    logo_url: row.logo_url ?? null,
     sectorI18n: { en: '', am: '', om: '' }, // not in DB schema
     website: row.website_url ?? undefined,
+    website_url: row.website_url ?? null,
   };
 }
 

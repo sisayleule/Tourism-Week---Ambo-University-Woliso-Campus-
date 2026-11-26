@@ -1700,9 +1700,9 @@ export const Home: React.FC = () => {
                   key={sp.id}
                   className="lift px-5 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-[#12221C] flex items-center gap-3"
                 >
-                  {(sp as typeof sp & { logo_url?: string | null }).logo_url && (
+                  {sp.logoPlaceholder && sp.logoPlaceholder !== '[SPONSOR LOGO]' && (
                     <img
-                      src={(sp as typeof sp & { logo_url?: string | null }).logo_url!}
+                      src={sp.logoPlaceholder}
                       alt={sp.name}
                       className="h-8 w-8 object-contain"
                     />

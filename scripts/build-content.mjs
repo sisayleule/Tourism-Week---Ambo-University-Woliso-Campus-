@@ -393,6 +393,31 @@ async function fetchFreshSnapshot() {
   // Attach startDate for day-name computation
   const events = eventRows.map((r) => adaptEvent({ ...r, _startDate: editionRow.start_date }));
 
+  // ── Post-fetch image correction ──────────────────────────────────────────
+  // Migration 022 assigned the correct /assets/events/ image paths in the DB,
+  // but the production DB may not have had the migration applied yet when these
+  // events were first inserted (they were created from a template and inherited
+  // old /assets/aistudio/ placeholder URLs).  We correct them here so the
+  // built site always displays the right photos regardless of DB state.
+  //
+  // Mapping (slug substring → correct image path):
+  //   miss-mr-tourism  → /assets/events/event-miss-mr-tourism.png  (Day 3 afternoon)
+  //   guest-tour       → /assets/events/event-guest-tour.png       (Day 5 morning)
+  const EVENT_IMAGE_OVERRIDES = [
+    { slugFragment: 'miss-mr-tourism',    image: '/assets/events/event-miss-mr-tourism.png' },
+    { slugFragment: 'miss-and-mr-tourism', image: '/assets/events/event-miss-mr-tourism.png' },
+    { slugFragment: 'guest-tour',          image: '/assets/events/event-guest-tour.png' },
+  ];
+  for (const ev of events) {
+    for (const override of EVENT_IMAGE_OVERRIDES) {
+      if (ev.slug.includes(override.slugFragment)) {
+        ev.image = override.image;
+        break;
+      }
+    }
+  }
+  // ── End image correction ─────────────────────────────────────────────────
+
   // 2b. Edition days (migration 017) — per-day programme metadata
   let editionDays = [];
   try {
